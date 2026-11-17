@@ -8,8 +8,10 @@
 - `name`은 폴더 이름과 같게 쓴다. `description`에는 무엇을 하는지와 언제 쓰는지(요청 예시 포함), 다른 skill과 나누는 경계를 쓴다.
 - skill끼리는 이름과 `<skills 폴더>/<이름>/` 경로로만 가리킨다. `<skills 폴더>`는 skill 폴더들이 나란히 설치되는 곳이다(`~/.claude/skills`, `~/.agents/skills`).
 - 스크립트는 자기 skill 폴더 안의 것만 import한다. 다른 skill의 스크립트를 import하지 않는다. skill 하나만 설치해도 그 skill의 스크립트가 돌아야 한다.
-- `agents/`에는 Claude Code subagent 정의(`<이름>.md`)를 둔다. skill은 그 정의가 없는 agent에서도 돌게 쓴다("있으면 맡기고, 없으면 직접").
-- 특정 agent에만 있는 도구(AskUserQuestion, Artifact 등)는 "있으면 쓰고, 없으면 이렇게"로 쓴다.
+- skill 본문에는 model 이름을 쓰지 않고 역할(작업 모델, 판단 모델, 싼 모델)로 쓴다. 역할과 agent별 이름의 대응은 `skills/debate-with-top-model/SKILL.md`의 "역할" 표 한 곳에만 둔다.
+- subagent 정의의 원본은 `agents/roles/<역할>.md` 한 벌이다. 앞머리에 `description`과 agent별 `<agent>_name`·`<agent>_model`·`<agent>_effort`를 쓴다. `agents/claude/`와 `agents/codex/`는 `python3 scripts/build_agents.py`가 만드는 파일이라 직접 고치지 않는다. 두 곳을 손으로 고치면 서로 어긋난다.
+- skill은 subagent 정의가 없는 agent에서도 돌게 쓴다("있으면 맡기고, 없으면 직접").
+- 특정 agent에만 있는 도구(선택 화면, Artifact 등)는 "있으면 쓰고(Claude Code는 X, Codex는 Y), 없으면 이렇게"로 쓴다. 한 vendor의 도구만 전제하지 않는다.
 
 ## 공개 레포
 
@@ -27,7 +29,13 @@
 
 ## 고친 뒤 확인
 
-장표·모션그래픽 skill을 고쳤으면 두 확인을 돌려 둘 다 종료 코드 0인지 본다.
+subagent 정의를 고쳤으면 만든 파일이 원본과 맞는지 본다(종료 코드 0).
+
+```bash
+python3 scripts/build_agents.py --check
+```
+
+장표·모션그래픽 skill을 고쳤으면 두 확인도 돌려 둘 다 종료 코드 0인지 본다.
 
 ```bash
 python3 skills/diagram-slides/scripts/render_slide.py --check

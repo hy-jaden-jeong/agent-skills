@@ -11,7 +11,7 @@ description: 문서·레포·시스템을 여러 단계로 나눠 가르친다. 
   - 장표(PNG): `diagram-slides` skill. 장표를 그리기 전에 `<skills 폴더>/diagram-slides/SKILL.md`를 읽는다. 굽기는 `python3 <skills 폴더>/diagram-slides/scripts/render_slide.py <장표.html>`이다.
   - 모션그래픽(HTML): `motion-graphics` skill. 같은 그림 위에서 상태가 시간 순서로 바뀌고 한 장으로는 그 모습이 안 보이는 내용에 쓴다. 고르는 기준과 만드는 법은 `<skills 폴더>/motion-graphics/SKILL.md`에 있고, 만들기 전에 읽는다. 굽기는 `python3 <skills 폴더>/motion-graphics/scripts/render_motion.py <spec.json>`이다.
   - 파일 이름: 장표는 `~/onboarding/<주제>/slides/NN-<개념>.html`, 모션그래픽은 `~/onboarding/<주제>/motion/NN-<개념>.json`이다. NN은 단계 번호이고 기초 단계는 `00a`, `00b`…로 쓴다. 퀴즈 턴의 세부 장표는 `-detail`, 재설명 장표는 `-redo-<각도>`를 붙이고, 곁가지 질문의 모션그래픽은 `side-<개념>.json`으로 둔다.
-- 선택지 질문은 도구가 있으면 그 도구로 낸다(Claude Code는 AskUserQuestion). 없는 도구에서는 번호를 붙인 보기로 낸다.
+- 선택지 질문은 도구가 있으면 그 도구로 낸다(Claude Code는 `AskUserQuestion`, Codex는 `request_user_input`). 없는 도구에서는 번호를 붙인 보기로 낸다.
 
 ## 항상 지킬 것
 

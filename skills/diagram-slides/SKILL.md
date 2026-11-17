@@ -125,7 +125,7 @@ Mermaid `sankey-beta`, `gantt`, `quadrantChart`, `block-beta`는 쓰지 않는�
 
 `python3 <스킬 폴더>/scripts/render_slide.py --check`는 견본을 구워 설치를 확인한다.
 
-Claude 데스크톱 앱에서는 Write·Edit 도구로 `.html`을 쓰면 Browser pane이 저절로 열린다. 그 앱에서는 장표를 Bash(`cp` 뒤 `python3`·`sed` 치환)로 만들고 고친다.
+파일 쓰기 도구로 `.html`을 쓰면 미리보기 창이 저절로 열리는 앱(예: Claude 데스크톱 앱의 Browser pane)에서는 장표를 Bash(`cp` 뒤 `python3`·`sed` 치환)로 만들고 고친다.
 
 필요한 것은 python3, Chrome(또는 Chromium·Edge), 인터넷이다. Mermaid를 CDN에서 불러오기 때문이다. Chrome이 기본 위치에 없으면 `CHROME_PATH` 환경 변수에 실행 파일 경로를 넣는다.
 

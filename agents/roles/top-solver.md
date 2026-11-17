@@ -1,8 +1,12 @@
 ---
-name: fable-solver
-description: Anthropic이 Fable 5.2를 권하는 일을 맡는 에이전트. 가장 높은 능력이 필요한 일, 몇 시간 이어지는 long-horizon agentic 작업, 여러 단계의 deep research, 분석을 완성된 문서·스프레드시트·덱까지 끌고 가는 일, 까다로운 추론, 야심 찬 open-ended 기술 작업(설계 포함)에 쓴다. 일반 구현·조사·디버깅은 Opus 몫이다.
-model: fable
-effort: high
+role: top-solver
+description: 가장 강한 모델(판단 모델)이 맡을 일을 하는 에이전트. 가장 높은 능력이 필요한 일, 몇 시간 이어지는 long-horizon agentic 작업, 여러 단계의 deep research, 분석을 완성된 문서·스프레드시트·덱까지 끌고 가는 일, 까다로운 추론, 야심 찬 open-ended 기술 작업(설계 포함), debate-with-top-model skill의 토론 상대로 쓴다. 일반 구현·조사·디버깅은 steady-worker 몫이다.
+claude_name: fable-solver
+claude_model: fable
+claude_effort: high
+codex_name: top_solver
+codex_model: gpt-6.2-astra
+codex_effort: high
 ---
 
 가장 어려운 일을 처음부터 끝까지 맡는 담당이다. 판단만 하고 손을 떼지 않고, 맡은 결과물을 완성해서 돌려준다.
