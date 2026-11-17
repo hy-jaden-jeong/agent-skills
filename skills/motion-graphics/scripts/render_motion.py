@@ -38,6 +38,7 @@ CHROME_APPS = [
 CHROME_COMMANDS = ["google-chrome", "google-chrome-stable", "chromium", "chromium-browser", "microsoft-edge"]
 
 STATES = {"idle", "run", "wait", "ok", "fail", "blocked", "warn", "skip"}
+FAILURE_STATES = {"fail", "blocked", "warn"}  # 정상 흐름에는 쓰지 않는다
 SIDES = {"top", "bottom", "left", "right"}
 TONES = {"", "good", "warn", "bad"}
 # 분량 기준. 넘으면 글을 줄이거나 시나리오·단계를 나눈다.
@@ -237,6 +238,19 @@ def render(source, output, allow_slots=False):
     output.write_text(page, encoding="utf-8")
 
 
+def failure_scenarios(spec):
+    """실패 상태(fail·blocked·warn)가 든 시나리오의 이름."""
+    names = []
+    for sc in spec.get("scenarios") or []:
+        states = set()
+        for step in sc.get("steps") or []:
+            for value in (step.get("set") or {}).values():
+                states.add(value[0] if isinstance(value, list) and value else value)
+        if states & FAILURE_STATES:
+            names.append(sc.get("name") or "(이름 없음)")
+    return names
+
+
 def render_and_report(source, output, allow_slots=False):
     try:
         render(source, output, allow_slots)
@@ -250,6 +264,9 @@ def render_and_report(source, output, allow_slots=False):
         print(f"굽지 못했다: {e}", file=sys.stderr)
         return 1
     print(f"구웠다: {output} (상자 이름·화살표·자동 재생 검사 통과)")
+    for name in failure_scenarios(json.loads(Path(source).read_text(encoding="utf-8"))):
+        print(f"확인: 시나리오 \"{name}\"에 실패 상태(fail·blocked·warn)가 있다. "
+              "이해에 꼭 필요한 시나리오인지 다시 본다. 자료의 이슈 절을 옮긴 것이면 빼고 정상 흐름만 남긴다.")
     return 0
 
 
