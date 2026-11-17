@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""onboarding 모션그래픽 spec(JSON)을 혼자 열리는 HTML 한 파일로 굽는다.
+"""모션그래픽 spec(JSON)을 혼자 열리는 HTML 한 파일로 굽는다.
 
 사용법
     python3 render_motion.py <spec.json> [<출력.html>]   출력을 생략하면 같은 이름의 .html
@@ -19,15 +19,23 @@ Chrome이 기본 위치에 없으면 CHROME_PATH 환경 변수에 실행 파일 
 """
 import html
 import json
+import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
 from urllib.parse import unquote
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from render_slide import ASSETS, RenderFailed, find_chrome  # noqa: E402
+ASSETS = Path(__file__).resolve().parent.parent / "assets"
+CHROME_APPS = [
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "~/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "/Applications/Chromium.app/Contents/MacOS/Chromium",
+    "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+]
+CHROME_COMMANDS = ["google-chrome", "google-chrome-stable", "chromium", "chromium-browser", "microsoft-edge"]
 
 STATES = {"idle", "run", "wait", "ok", "fail", "blocked", "warn", "skip"}
 SIDES = {"top", "bottom", "left", "right"}
@@ -36,6 +44,29 @@ TONES = {"", "good", "warn", "bad"}
 MAX_NODES, MAX_SCENARIOS, MAX_STEPS = 12, 5, 12
 MAX_ID, MAX_SUB, MAX_TEXT, MAX_T, MAX_RESULT = 20, 26, 170, 8, 6
 NODE_W, NODE_H, COL_W, ROW_H = 180, 48, 200, 110  # assets/motion.html의 상자 크기·격자와 같아야 한다
+
+
+class RenderFailed(Exception):
+    """굽지 못했다(종료 코드 1)."""
+
+
+def find_chrome():
+    custom = os.environ.get("CHROME_PATH")
+    if custom:
+        if Path(custom).expanduser().is_file():
+            return str(Path(custom).expanduser())
+        raise RenderFailed(f"CHROME_PATH가 가리키는 파일이 없다: {custom}")
+    for app in CHROME_APPS:
+        if Path(app).expanduser().is_file():
+            return str(Path(app).expanduser())
+    for command in CHROME_COMMANDS:
+        found = shutil.which(command)
+        if found:
+            return found
+    raise RenderFailed(
+        "Chrome을 찾지 못했다. Google Chrome을 설치하거나, "
+        "CHROME_PATH 환경 변수에 Chrome·Chromium·Edge 실행 파일 경로를 넣는다."
+    )
 
 
 class SpecProblems(Exception):
@@ -224,7 +255,7 @@ def render_and_report(source, output, allow_slots=False):
 
 def check():
     """설치 확인. 견본 spec을 구워 보고, 열어 볼 수 있게 HTML 위치를 알려 준다."""
-    out_dir = Path(tempfile.mkdtemp(prefix="onboarding-motion-check-"))
+    out_dir = Path(tempfile.mkdtemp(prefix="motion-graphics-check-"))
     code = render_and_report(ASSETS / "motion-spec.json", out_dir / "motion-spec.html", allow_slots=True)
     if code:
         print("설치 확인 실패. 위 메시지를 보고 고친 뒤 다시 실행한다.", file=sys.stderr)

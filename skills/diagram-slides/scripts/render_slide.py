@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""onboarding 장표(HTML)를 16:9 PNG로 굽는다.
+"""장표(HTML)를 16:9 PNG로 굽는다.
 
 사용법
     python3 render_slide.py <장표.html> [<출력.png>]   출력을 생략하면 같은 이름의 .png
@@ -164,7 +164,7 @@ def render_and_report(source, output, allow_slots=False):
 
 def check():
     """설치 확인. 견본을 모두 구워 보고, 열어 볼 수 있게 PNG 위치를 알려 준다."""
-    out_dir = Path(tempfile.mkdtemp(prefix="onboarding-slide-check-"))
+    out_dir = Path(tempfile.mkdtemp(prefix="diagram-slides-check-"))
     templates = sorted(ASSETS.glob("slide-*.html"))
     codes = [render_and_report(t, out_dir / f"{t.stem}.png", allow_slots=True) for t in templates]
     if not templates or any(codes):

@@ -1,4 +1,4 @@
-// onboarding 장표 마무리 스크립트. render_slide.py가 굽는 순간에 장표 끝에 넣는다.
+// 장표 마무리 스크립트. render_slide.py가 굽는 순간에 장표 끝에 넣는다.
 // 하는 일: (1) Mermaid를 slide.css 색으로 그린다 (2) sankey·timebar 값을 SVG로 그린다
 //          (3) 그림을 영역에 맞춘다 (4) 규칙을 어긴 곳을 찾는다.
 // 결과는 document.title에 'SLIDE-REPORT:<JSON>'으로 남기고 render_slide.py가 읽는다.
