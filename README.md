@@ -69,7 +69,9 @@ skill들이 역할 이름으로 subagent를 부른다. 정의가 없어도 skill
 | --- | --- | --- | --- |
 | 판단 모델 (`top-solver`) | `debate-with-top-model`의 토론 상대, 통째로 맡길 어려운 조각 | `fable-solver`: Fable, effort `high` | `top_solver`: `gpt-6.2-astra`, `high` |
 | 작업 모델 (`steady-worker`) | 판단이 필요한 구현·분석·조사·검토 | `opus-worker`: Opus, effort `high` | `steady_worker`: `gpt-6.2-sol`, `high` |
-| 싼 모델 (`light-worker`) | 그리기, 정해진 대로 고치기, 단순 검색 | `sonnet-worker`: Sonnet, effort `medium` | `light_worker`: `gpt-6-luna`, `medium` |
+| 싼 모델 (`light-worker`) | 그리기, 정해진 대로 고치기, 단순 검색 | `sonnet-worker`: Sonnet, effort `medium` | `light_worker`: `gpt-6.1-terra`, `medium` |
+
+Codex의 `gpt-6.1-terra`는 Codex CLI 0.159.0 이상에서 돈다.
 
 Claude Code (`~/.claude/agents`):
 

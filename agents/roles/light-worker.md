@@ -5,7 +5,7 @@ claude_name: sonnet-worker
 claude_model: sonnet
 claude_effort: medium
 codex_name: light_worker
-codex_model: gpt-6-luna
+codex_model: gpt-6.1-terra
 codex_effort: medium
 ---
 

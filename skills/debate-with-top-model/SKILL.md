@@ -15,7 +15,7 @@ description: 메인은 작업 모델로 두고, 판단이 무거운 순간에만
 | --- | --- | --- | --- |
 | 작업 모델 | 메인 세션. 사용자와 대화, 구현, 검증, 견주고 고르기 | Opus 5.5 | `gpt-6.2-sol` |
 | 판단 모델 | 토론 상대. subagent로만 부른다 | Fable 5.2: `fable-solver` 에이전트 | `gpt-6.2-astra`: `top_solver` 에이전트 |
-| 싼 모델 | 그리기, 정해진 대로 고치기, 단순 검색 | Sonnet 5.5: `sonnet-worker` 에이전트 | `gpt-6-luna`: `light_worker` 에이전트 |
+| 싼 모델 | 그리기, 정해진 대로 고치기, 단순 검색 | Sonnet 5.5: `sonnet-worker` 에이전트 | `gpt-6.1-terra`: `light_worker` 에이전트 |
 
 - 에이전트 정의는 이 skill이 든 레포의 `agents/`에 있다(README의 설치 참고). 정의가 없으면 subagent를 부를 때 model과 effort를 직접 정한다. Claude Code는 Agent 도구에 `model: fable`, `effort: high`를 준다. Codex는 판단 모델을 고정하려면 custom agent 파일(`~/.codex/agents/*.toml`)이 필요하다. 없으면 subagent가 메인의 model을 물려받으니, 그때는 아래 "부를 수 없을 때"를 따른다.
 - 표에 없는 agent에서는 그 agent가 가장 강하다고 안내하는 model을 판단 모델로 쓴다. model 이름은 자주 바뀌니 그 agent의 문서에서 확인한다.
