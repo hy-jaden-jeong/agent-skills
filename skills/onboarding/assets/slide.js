@@ -355,7 +355,7 @@
           return bg ? [...g.querySelectorAll('text')].filter(x => x.getBBox().width > bg.getBBox().width - 6).map(x => x.textContent.trim()) : [];
         });
         if (wide.length)
-          report.problems.push(`timeline 칸 글자가 칸 밖으로 넘친다(${wide.slice(0, 2).join(', ')}). 칸 폭은 고정이고 공백에서만 줄이 바뀐다. 긴 이름은 healthscore_<br>user_access_daily처럼 나눌 곳에 <br>을 넣거나, 이름 칸이 따로 있는 slide-timebar.html을 쓴다.`);
+          report.problems.push(`timeline 칸 글자가 칸 밖으로 넘친다(${wide.slice(0, 2).join(', ')}). 칸 폭은 고정이고 공백에서만 줄이 바뀐다. 긴 이름은 user_activity_<br>daily_report처럼 나눌 곳에 <br>을 넣거나, 이름 칸이 따로 있는 slide-timebar.html을 쓴다.`);
       }
       const off = offPalette();
       if (off.length)

@@ -5,7 +5,7 @@
     메모는 Note right of A: 나 Note over A,B: 로 쓴다. 자기 자신에게 보내는 화살표(A 에서 A)는 글자가 세로선에 겹치므로 Note로 대신한다. (이 주석 안에 대시 둘과 > 를 붙여 쓰면 주석이 거기서 끝나 버린다)
   - 강조는 구간으로만 한다. 지금 볼 화살표들을 rect hl ... end 로 감싼다. 진짜 문제(timeout, 실패)는 rect bad.
     rect 뒤에 색 이름(hl, alt, bad)만 쓴다. rgb 값이나 classDef는 쓰지 않는다. 구울 때 들어간다.
-  - 참여자 이름은 코드에 나오는 실제 이름을 쓰고, 별명은 participant api as 검색 API 처럼 as 뒤에 둔다.
+  - 참여자 이름은 코드에 나오는 실제 이름을 쓰고, 별명은 participant api as 주문 API 처럼 as 뒤에 둔다.
 -->
 <h1>{{제목: 이 장표의 결론 한 문장}}</h1>
 <p class="subtitle">{{부제: 어떤 요청 한 건을 따라갔는지. 지어낸 값이면 (가상)}}</p>
@@ -14,15 +14,15 @@
 <pre class="mermaid">
 sequenceDiagram
     participant U as 사용자
-    participant A as 검색 API
-    participant E as Elasticsearch
-    U->>A: 검색어 보냄
-    A->>E: query
+    participant A as 주문 API
+    participant P as 결제 서비스
+    U->>A: 주문 요청
+    A->>P: 결제 요청
     rect hl
-    E-->>A: hits 20건
-    Note right of A: 권한 없는 문헌 빼기
+    P-->>A: 결제 승인
+    Note right of A: 재고 차감
     end
-    A-->>U: 결과 18건
+    A-->>U: 주문 완료
 </pre>
 </div>
 <div class="panel">
