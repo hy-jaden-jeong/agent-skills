@@ -1,0 +1,38 @@
+<!-- 상태 장표 (state). 이 주석은 지워도 된다.
+  - "어떤 event에 어느 상태로 가나"에 답할 때 쓴다: 주문·job·연결처럼 한 대상이 상태를 오가는 규칙. 되돌아가는 화살표(retry)가 있어도 된다.
+    일이 차례대로 넘어가는 흐름이면 slide-flow.html, 날짜 순서면 slide-timeline.html, 한 번 실행이 실제로 상태를 차례로 밟는
+    모습을 단계마다 보여야 하면 motion-graphics skill이다.
+  - Mermaid stateDiagram-v2로 쓴다. 한 줄이 전이 하나다: 아래 예처럼 상태, 화살표, 상태, ": event" 차례로 쓴다.
+    시작 점은 왼쪽에, 끝 점은 오른쪽에 "[*]"를 쓴다.
+  - 강조: "class A hl"(지금 볼 상태), 진짜 문제 상태는 "class F bad". 칠한 곳은 4곳까지. classDef는 쓰지 않는다(slide.js가 붙인다).
+  - class를 붙일 상태 이름은 영문·숫자·_로 쓴다(한글이면 Mermaid 문법 오류). 한글로 보이려면 'state "결제됨" as paid'로 별칭을 붙인다.
+  - 상태는 8개 안팎까지. 많아져 글자가 18px보다 작아지면 굽지 않는다. 장표를 나누거나, 옆으로 길면 "direction LR"을 지운다.
+-->
+<h1>{{제목: 이 장표의 결론 한 문장}}</h1>
+<p class="subtitle">{{부제: 무엇의 상태인지. 지어낸 값이면 (가상)}}</p>
+<div class="stage">
+<div class="diagram">
+<pre class="mermaid">
+stateDiagram-v2
+    state "주문됨" as ordered
+    state "결제됨" as paid
+    state "취소됨" as canceled
+    state "배송중" as shipping
+    state "배송완료" as delivered
+    [*] --> ordered
+    ordered --> paid: 결제 승인
+    ordered --> canceled: 30분 안에 결제 없음
+    paid --> shipping: 출고
+    shipping --> delivered: 수령 확인
+    delivered --> [*]
+    class paid hl
+</pre>
+</div>
+<div class="panel">
+<h3>핵심</h3><p class="key">{{가져갈 한 문장}}</p>
+<h3>용어</h3><ul><li><b>{{용어}}</b>: {{무엇인지 한 줄}}</li></ul>
+<h3>읽는 법</h3><ol><li>{{시작 점부터 따라가는 순서}}</li><li>{{색칠한 상태가 왜 중요한지}}</li><li>{{다음 순서}}</li></ol>
+<p class="next"><b>이어지는 것</b> {{앞 장과의 연결, 실제 이름}}</p>
+</div>
+</div>
+<p class="source"><b>근거</b> {{코드 위치(path:line)·문서. 없으면 이 줄을 지운다}}</p>

@@ -1,0 +1,32 @@
+<!-- 층 장표 (stack). 이 주석은 지워도 된다.
+  - "무엇 위에서 도나"에 답할 때 쓴다: 위 층이 아래 층을 써서 도는 구조(application → engine → 저장 형식 → 저장 장치). 화살표를 그리지 않는다.
+    요청이 층을 차례로 지나가는 흐름을 보이려면 slide-flow.html이다.
+  - .stack 안에 .layer를 위(사용자 쪽)부터 아래(저장 장치 쪽) 차례로 쓴다. 한 층에 나란히 둘 것은 .layers로 묶는다.
+  - 층마다 첫 줄 <b>이름</b>, 다음 줄 하는 일 한 줄. 층은 6개 안팎까지.
+  - 지금 볼 층 하나만 class="layer hl". 위·아래 끝 뜻은 .stack-axis 두 줄로 적는다(필요 없으면 지운다).
+-->
+<h1>{{제목: 이 장표의 결론 한 문장}}</h1>
+<p class="subtitle">{{부제: 어느 system의 층인지. 지어낸 값이면 (가상)}}</p>
+<div class="stage">
+<div class="diagram">
+<div class="stack-axis"><span>↑ {{사용자에 가까운 쪽}}</span></div>
+<div class="stack">
+ <div class="layer"><b>SQL · DataFrame API</b>사용자가 쓰는 query</div>
+ <div class="layers">
+  <div class="layer hl"><b>query engine</b>query를 task로 쪼개 실행</div>
+  <div class="layer"><b>다른 engine</b>같은 table을 읽는다</div>
+ </div>
+ <div class="layer"><b>table format</b>transaction log + table schema</div>
+ <div class="layer"><b>Parquet file</b>column 단위로 저장한 data file</div>
+ <div class="layer"><b>object storage</b>file을 담는 곳</div>
+</div>
+<div class="stack-axis"><span>↓ {{저장 장치에 가까운 쪽}}</span></div>
+</div>
+<div class="panel">
+<h3>핵심</h3><p class="key">{{가져갈 한 문장}}</p>
+<h3>용어</h3><ul><li><b>{{용어}}</b>: {{무엇인지 한 줄}}</li></ul>
+<h3>읽는 법</h3><ol><li>{{아래 층부터 읽는 순서}}</li><li>{{색칠한 층이 왜 중요한지}}</li><li>{{다음 순서}}</li></ol>
+<p class="next"><b>이어지는 것</b> {{앞 장과의 연결, 실제 이름}}</p>
+</div>
+</div>
+<p class="source"><b>근거</b> {{코드 위치(path:line)·문서. 없으면 이 줄을 지운다}}</p>

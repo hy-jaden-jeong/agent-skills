@@ -42,7 +42,7 @@ body>.subtitle{font-size:21px;margin-bottom:22px;color:var(--text-dim);white-spa
 .diagram{min-height:0;min-width:0;overflow:hidden;display:flex;flex-direction:column;
   justify-content:safe center;align-items:center;gap:14px}
 /* Mermaid와 값으로 그리는 그림(sankey, timebar)은 남은 높이를 다 쓰고 가운데 놓인다 */
-.diagram>pre.mermaid,.diagram>pre.sankey,.diagram>pre.timebar{flex:1 1 0;min-height:0;width:100%;overflow:hidden;
+.diagram>pre.mermaid,.diagram>pre.sankey,.diagram>pre.timebar,.diagram>pre.cells,.diagram>pre.tree,.diagram>pre.quadrant{flex:1 1 0;min-height:0;width:100%;overflow:hidden;
   display:flex;align-items:center;justify-content:center;white-space:normal;font-family:var(--font)}
 .diagram svg.chart{overflow:visible}
 
@@ -102,3 +102,35 @@ table.grid th{font-family:var(--mono);font-size:16px;color:var(--text-strong);ba
 .hl>b:first-child{color:var(--hl-text)}.alt>b:first-child{color:var(--alt-text)}.bad>b:first-child{color:var(--bad-text)}
 /* 글자색만(칠한 곳으로 세지 않는다) */
 .text-hl{color:var(--hl-text)}.text-bad{color:var(--bad-text)}
+
+/* 값으로 그리는 그림이 묶음(.group) 안에 들어갈 때(전후 장표): 제 높이만큼만 차지한다 */
+.group pre.cells,.group pre.tree{display:flex;justify-content:center;width:100%;white-space:normal;font-family:var(--font)}
+
+/* 전후 (slide-before-after): 같은 곳의 두 시점. 기본은 위(전)·아래(후), 좁고 높은 그림이면 class="shift side"로 왼쪽·오른쪽 */
+.shift{display:grid;gap:10px;width:100%;grid-template-columns:minmax(0,1fr)}
+.shift.side{grid-template-columns:minmax(0,1fr) 150px minmax(0,1fr);align-items:center}
+.shift>.group{padding:12px 18px 16px}
+.shift>.group>h3{font-size:19px;margin-bottom:10px;color:var(--text-dim)}
+.shift>.link{font-size:26px}
+.shift:not(.side)>.link small{display:inline;margin:0 0 0 10px;vertical-align:middle;font-size:18px}
+.shift.side>.link small{font-size:18px}
+
+/* 층 (slide-stack): 위 층이 아래 층 위에서 돈다. 화살표를 그리지 않는다 */
+.stack{display:grid;gap:8px;width:100%;max-width:760px}
+.layer{min-width:0;padding:12px 18px;font-size:19px;line-height:1.4;text-align:center;
+  background:var(--box);border:1px solid var(--line-strong);border-radius:10px}
+.layer>b:first-child{display:block;font-size:21px}
+.layer.hl,.layer.alt,.layer.bad{border-width:2px}
+.layer.hl{background:var(--hl-fill);border-color:var(--hl)}.layer.alt{background:var(--alt-fill);border-color:var(--alt)}.layer.bad{background:var(--bad-fill);border-color:var(--bad)}
+.layers{display:grid;gap:8px;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}
+.stack-axis{display:flex;justify-content:space-between;width:100%;max-width:760px;font-size:18px;color:var(--text-dim)}
+
+/* 비교표 (slide-matrix): row가 기준, column이 선택지 */
+table.matrix{font-size:20px}
+table.matrix th,table.matrix td{padding:12px 14px;border:1px solid var(--line);text-align:center;vertical-align:middle}
+table.matrix tr>:first-child{text-align:left;color:var(--text-soft);font-weight:600;background:none}
+table.matrix thead th{font-size:21px;color:var(--text-strong);background:var(--box)}
+table.matrix td.no{color:var(--text-dim)}
+table.matrix td small,table.matrix th small{display:block;font-size:18px;font-weight:400;color:var(--text-dim)}
+table.matrix col.hl{background:var(--hl-fill);border:2px solid var(--hl)}
+table.matrix col.alt{background:var(--alt-fill);border:2px solid var(--alt)}

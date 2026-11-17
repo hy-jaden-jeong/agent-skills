@@ -1,6 +1,6 @@
 ---
 name: diagram-slides
-description: 설명을 16:9 다크 모드 장표(PNG) 한 장에 그림 하나와 설명 패널(핵심·용어·읽는 법)로 담아 굽는다. 흐름·구조는 Mermaid flowchart, 묶음, 대응, 주고받기(sequence), 사건 순서(timeline), 시간 막대, 양의 흐름(sankey), 용어 표 견본 중 장표가 답하는 질문에 맞는 모양을 골라 채운다. 구조·흐름·대응을 그림으로 설명할 때, "그림으로 보여줘", "다이어그램 그려줘", "장표로 만들어줘" 요청에 쓴다. 같은 그림 위에서 상태가 4단계 이상 차례로 바뀌는 내용은 motion-graphics skill이 맡는다.
+description: 설명을 16:9 다크 모드 장표(PNG) 한 장에 그림 하나와 설명 패널(핵심·용어·읽는 법)로 담아 굽는다. 흐름(flowchart), 묶음, cells(칸 줄), tree, stack(층), 주고받기(sequence), 사건 순서(timeline), 시간 막대, 양의 흐름(sankey), 상태(state), 전후, 대응, 비교표, 2x2, 용어 표 견본 중 장표가 답하는 질문에 맞는 모양을 골라 채운다. 구조·흐름·대응을 그림으로 설명할 때, "그림으로 보여줘", "다이어그램 그려줘", "장표로 만들어줘" 요청에 쓴다. 같은 그림 위에서 상태가 4단계 이상 차례로 바뀌는 내용은 motion-graphics skill이 맡는다.
 ---
 
 # 장표 만드는 법
@@ -49,33 +49,59 @@ description: 설명을 16:9 다크 모드 장표(PNG) 한 장에 그림 하나�
 
 그리기 전에 이 장표가 답하는 질문을 한 줄로 적고, 그 질문에 맞는 모양을 고른다. 상자와 화살표(flowchart)는 "무엇이 무엇으로 이어지나"에 맞는 모양이다. "언제", "얼마나", "누가 누구에게"를 flowchart로 그리면 정작 핵심인 시간·양·순서가 그림에서 사라진다.
 
-| 장표가 답하는 질문 | 모양 | 견본 (`<스킬 폴더>/assets/`) |
-| --- | --- | --- |
-| 무엇이 무엇으로 이어지나, 어떻게 짜여 있나 | 흐름·구조 (Mermaid flowchart) | `slide-flow.html` |
-| 어디에 사나. 이름이 비슷한데 사는 곳이 다른 것 | 묶음 (상자) | `slide-groups.html` |
-| 같은 것이 두 곳에서 어떤 모양인가 | 대응 (표 + 카드) | `slide-compare.html` |
-| 누가 누구에게 무엇을 요청하고 돌려받나 | 주고받기 (Mermaid sequenceDiagram) | `slide-sequence.html` |
-| 무엇이 어떤 차례로 일어나나 | 사건 순서 (Mermaid timeline) | `slide-timeline.html` |
-| 언제 시작해 얼마나 걸리나, 겹치나, 기다리나 | 시간 막대 (값으로 그림) | `slide-timebar.html` |
-| 단계마다 얼마나 남고 어디로 갈라지고 얼마나 빠지나 | 양의 흐름 (값으로 그림) | `slide-sankey.html` |
-| 용어 정리 | 용어 표 | `slide-glossary.html` |
+먼저 묶음(구조, 흐름·시간, 변화, 견줌, 용어)으로 좁히고, 그 안에서 질문이 맞는 줄을 고른다.
+
+| 묶음 | 장표가 답하는 질문 | 모양 | 견본 (`<스킬 폴더>/assets/`) |
+| --- | --- | --- | --- |
+| 구조 | 무엇이 무엇으로 이어지나, 어떻게 짜여 있나 | 흐름·구조 (Mermaid flowchart) | `slide-flow.html` |
+| 구조 | 어디에 사나. 이름이 비슷한데 사는 곳이 다른 것 | 묶음 (상자) | `slide-groups.html` |
+| 구조 | 이것 하나는 안이 어떻게 생겼나 (index node, list, page, packet header) | cells (칸 줄, 값으로 그림) | `slide-cells.html` |
+| 구조 | 무엇 아래로 갈라지나 (B-tree, 파일 계층, 조직) | tree (값으로 그림) | `slide-tree.html` |
+| 구조 | 무엇 위에서 도나 | stack (층 쌓기) | `slide-stack.html` |
+| 흐름·시간 | 누가 누구에게 무엇을 요청하고 돌려받나 | 주고받기 (Mermaid sequenceDiagram) | `slide-sequence.html` |
+| 흐름·시간 | 무엇이 어떤 차례로 일어나나 | 사건 순서 (Mermaid timeline) | `slide-timeline.html` |
+| 흐름·시간 | 언제 시작해 얼마나 걸리나, 겹치나, 기다리나 | 시간 막대 (값으로 그림) | `slide-timebar.html` |
+| 흐름·시간 | 단계마다 얼마나 남고 어디로 갈라지고 얼마나 빠지나 | 양의 흐름 (값으로 그림) | `slide-sankey.html` |
+| 흐름·시간 | 어떤 event에 어느 상태로 가나 | state (Mermaid stateDiagram-v2) | `slide-state.html` |
+| 변화 | 하고 나면 무엇이 바뀌나 | before-after (같은 그림 두 시점) | `slide-before-after.html` |
+| 견줌 | 같은 것이 두 곳에서 어떤 모양인가 | 대응 (표 + 카드) | `slide-compare.html` |
+| 견줌 | 선택지마다 무엇이 되나 | matrix (비교표) | `slide-matrix.html` |
+| 견줌 | 두 기준으로 놓으면 선택지가 어디에 서나 | quadrant (2x2, 값으로 그림) | `slide-quadrant.html` |
+| 용어 | 용어 정리 | 용어 표 | `slide-glossary.html` |
 
 - 헷갈리는 짝
   - timeline과 timebar: 차례만 중요하면 timeline, 길이·겹침·기다림이 중요하면 timebar다. timeline의 칸 간격은 실제 시간에 비례하지 않는다.
   - sequence와 flowchart: 요청과 응답이 오가는 순서가 핵심이면 sequence, 데이터가 한 방향으로 흘러 쌓이면 flowchart다.
   - sankey와 flowchart: 건수가 줄고 갈라지는 양이 핵심이면 sankey, 단계 이름과 연결만 보이면 되면 flowchart다.
+  - cells와 groups: 칸 하나하나의 순서·폭이 뜻이면(node 안 key와 pointer, page 안 header와 row) cells, 서로 다른 것이 어디에 사는지면 groups다.
+  - tree와 flow: 부모 하나에 자식이 여럿으로 갈라지는 계층이면 tree, 일이 차례로 넘어가면 flow다. node 안을 칸으로 보여야 하면 tree다(flowchart는 못 그린다).
+  - before-after와 compare: 같은 것의 두 시점이면 before-after, 같은 것이 두 곳(두 층, 두 system)에서 다른 모양이면 compare다.
+  - before-after와 motion-graphics: 전과 후 두 장면으로 바뀐 곳이 보이면 before-after, 바뀌는 과정이 4단계 이상이라 중간이 보여야 하면 `motion-graphics` skill이다.
+  - state와 flow·timeline: 한 대상이 event마다 상태를 오가는 규칙(되돌아가는 화살표 포함)이면 state, 일이 넘어가는 길이면 flow, 실제로 일어난 차례면 timeline이다.
+  - stack과 flow: 위 층이 아래 층을 써서 돈다(화살표 없음)면 stack, 요청이 층을 차례로 지나가는 길이면 flow다.
+  - matrix와 compare·quadrant: 선택지 3~4개를 기준 여러 개로 ✓/✕ 하면 matrix, 두 방식을 그림으로 나란히 보이면 compare, 두 기준 위의 위치·치우침이 중요하면 quadrant다.
 - 고른 모양은 서브에이전트 지시문과, 기록해 두는 곳이 있으면 거기(예: teach-me의 `deck-spec.md`)에 "모양: <모양> — <이유 한 줄>"로 적는다(예: "모양: 시간 막대 — 집계 job이 늦게 끝나 리포트 마감을 넘기는 게 핵심"). 이유가 "상자로 그리기 쉬워서"면 다시 고른다.
-- 견본마다 맨 위 주석에 그 견본의 쓰는 법과 분량 기준이 있다. 견본에 없는 모양이 꼭 필요할 때만 장표 안에 `<style>`을 몇 줄 더한다.
+- 견본마다 맨 위 주석에 그 견본의 쓰는 법, 문법, 분량 기준이 있다. 견본에 없는 모양이 꼭 필요할 때만 장표 안에 `<style>`을 몇 줄 더한다.
+
+### 견본이 없을 때
+
+표에서 질문이 맞는 줄을 못 찾았을 때, 비슷한 견본(groups의 card, flow의 상자)으로 때우지 않는다. 읽는 사람이 구조를 못 본다.
+
+1. 장표 2장으로 쪼개면 각 장이 표의 질문에 맞는지 본다(예: "안이 어떻게 생겼나" cells 1장 + "어떻게 찾아 내려가나" tree 1장).
+2. 쪼갤 수 없으면 맡긴 쪽(메인 agent)이 `.diagram` 안에 SVG를 직접 그린다(자유 그림). 색은 `var(--hl)`·`var(--box)` 같은 slide.css 변수만, 글자는 18px 이상으로 쓴다. 자유 그림도 다른 그림과 같은 검사(글자 크기, 팔레트 밖 색, 강조 수, 넘침)를 받는다.
+3. 같은 질문이 두 번 나오면 견본으로 더한다(아래 "표에 없는 모양을 더하려면"). 자유 그림은 매번 좌표를 새로 계산해야 하고 맡긴 쪽이 틀리기 쉽다.
+
+서브에이전트는 맞지 않는 견본을 고르거나 견본을 고쳐 맞추지 않는다. "이 장표는 질문 …에 맞는 견본이 없다"고 보고하고 멈춘다. 쪼갤지, 자유 그림으로 갈지는 장표가 답할 질문을 아는 맡긴 쪽이 정해야 하고, 고친 견본은 검사를 지나도 질문에 답하지 못한다.
 
 ### 표에 없는 모양을 더하려면
 
-Mermaid에는 이 밖에도 종류가 많다(stateDiagram, erDiagram, xychart 등). 표에 없는 종류는 기본 색이 무지개색이거나 글자가 작아서, `render_slide.py`가 "팔레트 밖 색"이나 "글자가 작아진다"로 PNG를 막을 수 있다. 꼭 필요하면 아래 순서로 표에 더한다.
+Mermaid에는 이 밖에도 종류가 많다(erDiagram, xychart, quadrantChart 등). 표에 없는 종류는 기본 색이 무지개색이거나 글자가 작아서, `render_slide.py`가 "팔레트 밖 색"이나 "최소 크기보다 작다"로 PNG를 막을 수 있다. 꼭 필요하면 아래 순서로 표에 더한다.
 
-1. 그 종류로 장표를 구워 본다. 막히면 `assets/slide.js`에 그 종류의 색·글자 크기 설정을 더한다(sequence·timeline 설정이 예시다).
+1. 그 종류로 장표를 구워 본다. 막히면 `assets/slide.js`에 그 종류의 색·글자 크기 설정을 더한다(sequence·timeline·state 설정이 예시다).
 2. 회색 바탕에 강조 1~2곳, 글자 18px 이상으로 나오면 견본(`slide-<종류>.html`)을 만들고 `--check`로 굽는다.
 3. 이 표에 한 줄, `slide.js`의 `MERMAID_KINDS`에 이름을 더한다.
 
-Mermaid `sankey-beta`와 `gantt`는 쓰지 않는다. 색을 회색으로 맞출 수 없고 글자가 작아서 `slide-sankey.html`과 `slide-timebar.html`을 따로 만들었다.
+Mermaid `sankey-beta`, `gantt`, `quadrantChart`, `block-beta`는 쓰지 않는다. 색을 회색으로 맞출 수 없거나 글자가 작거나 칸에서 나가는 화살표를 못 그려서 `slide-sankey`·`slide-timebar`·`slide-quadrant`·`slide-cells`를 따로 만들었다.
 
 ## 만들고 굽기
 
@@ -92,8 +118,8 @@ Mermaid `sankey-beta`와 `gantt`는 쓰지 않는다. 색을 회색으로 맞출
    | 코드 | 뜻 | 할 일 |
    | --- | --- | --- |
    | 0 | PNG를 만들었다 | PNG를 열어 확인한다 |
-   | 1 | 굽지 못했다(Chrome 없음, Mermaid 문법 오류·불러오기 실패, 입력 오류) | 메시지대로 고친다. 환경 문제면 사용자에게 알린다 |
-   | 2 | 장표가 규칙을 어겼다(넘침, 그림 글자 18px 미만, 빠진 구조, 채우지 않은 자리). PNG를 만들지 않고, 예전에 구운 PNG가 있으면 지운다 | 글을 줄이거나 장표를 나눠 다시 굽는다. 글자 크기를 줄여 맞추지 않는다 |
+   | 1 | 굽지 못했다(Chrome 없음, Mermaid 문법 오류·불러오기 실패, 값 그림 문법 오류, 입력 오류). 값 그림 문법 오류는 몇 번째 줄인지 알린다 | 메시지대로 고친다. 환경 문제면 사용자에게 알린다 |
+   | 2 | 장표가 규칙을 어겼다(넘침, 그림 글자 18px 미만(보조 설명 16px 미만), 팔레트 밖 색, 강조 수, 값 그림의 줄·칸 수 상한, 빠진 구조, 채우지 않은 자리). PNG를 만들지 않고, 예전에 구운 PNG가 있으면 지운다 | 글을 줄이거나 장표를 나눠 다시 굽는다. 글자 크기를 줄여 맞추지 않는다 |
 
 5. 기록해 두는 곳이 있으면 만든 PNG 경로를 적는다.
 
@@ -127,10 +153,17 @@ timeline
 - 칸 폭은 고정이고 줄은 공백에서만 바뀐다. 밑줄로 이은 긴 이름은 `user_activity_<br>daily_report`처럼 나눌 곳에 `<br>`을 넣는다(`<br>`은 공백으로 바뀌어 칸이 모자랄 때 그 자리에서 줄이 바뀐다). 넘치면 PNG가 안 나온다.
 - 칸을 칠할 때는 시점 뒤에 `:::hl`을 붙인다(`03시 :::hl : 적재`). section을 쓰면 section 줄에 붙이고, section 전체가 칠해진다.
 
-sankey·timebar (값으로 그림, Mermaid 아님)
+stateDiagram-v2
 
-- `<pre class="sankey">`, `<pre class="timebar">` 블록에 값 줄만 쓰면 `slide.js`가 그린다. 문법은 견본 주석에 있다.
-- 강조는 줄 끝에 `, hl`이나 `, bad`를 붙인다. 단위는 `data-unit="건"`처럼 블록에 둔다.
+- 한 줄이 전이 하나다. 강조는 `class X hl`, 진짜 문제 상태는 `class X bad`이다. classDef는 쓰지 않는다. `slide.js`가 팔레트 색으로 붙이고, 장표에 쓴 색은 덮어쓴다.
+- `class`를 붙일 상태 이름은 영문·숫자·_로 쓴다. 한글로 보이려면 `state "결제됨" as paid`로 별칭을 붙인다. 한글 이름에 바로 `class`를 붙이면 Mermaid 문법 오류다.
+
+값으로 그림 (sankey·timebar·cells·tree·quadrant, Mermaid 아님)
+
+- `<pre class="sankey|timebar|cells|tree|quadrant">` 블록에 값 줄만 쓰면 `slide.js`가 SVG로 그린다. 문법은 견본 주석에 있다.
+- sankey·timebar·quadrant는 줄 끝에 `, hl`(또는 `, alt`, `, bad`)를 붙여 칠한다. 단위는 `data-unit="건"`처럼 블록에 둔다.
+- cells·tree는 칸 끝에 `:::hl`을 붙인다. 칸 하나는 "글 ; 칸 아래 설명 /폭비율 :::hl" 차례로 쓴다. 차례가 바뀌거나, `[`를 닫지 않거나, 이름·메모·층 이름에 `:::`·`/N`이 남거나, 들여쓰기가 스페이스 2칸씩이 아니면 몇 번째 줄인지 알리고 굽지 않는다. 문법 기호가 글자로 찍힌 PNG는 나오지 않는다.
+- 값 그림은 `.diagram` 안에 둔다. 밖(설명 패널 등)에 두면 그려지지 않으므로 코드 2로 막는다. `%%`로 시작하는 줄은 주석이다.
 
 ## 맡기기
 
@@ -148,6 +181,7 @@ sankey·timebar (값으로 그림, Mermaid 아님)
 파일: <저장 폴더>/NN-<개념>.html
 굽기: python3 <스킬 폴더>/scripts/render_slide.py <장표.html>
   - 코드 2가 나오면 글자를 줄이지 말고 글을 줄이거나 장표를 나눠 다시 굽고, 무엇을 바꿨는지 보고한다.
+  - 준 견본이 장표의 질문에 맞지 않으면 다른 견본으로 바꾸거나 견본을 고치지 말고 그대로 보고한다.
   - 코드 0이면 PNG를 열어 겹침·잘림·잘못 붙은 edge 라벨을 확인하고, 있으면 고쳐 다시 굽는다.
 표기: 문장은 한국어, 기술 용어는 영어 그대로(owner, job, view, row, column, service principal 등). 번역(주인, 줄·칸)이나 음차(잡, 테이블)로 바꾸지 않고, 글을 줄일 때도 용어는 그대로 둔다.
 장표 1

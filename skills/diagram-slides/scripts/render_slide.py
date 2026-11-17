@@ -6,12 +6,14 @@
     python3 render_slide.py --check                    설치 확인: 견본 장표를 구워 본다
 
 장표 파일에는 body 안쪽만 쓴다(assets/slide-*.html 견본). 스타일(assets/slide.css)과
-Mermaid 설정·sankey·timebar 그리기(assets/slide.js)는 굽는 순간에 이 스크립트가 넣는다.
+Mermaid 설정·값 그림(sankey·timebar·cells·tree·quadrant) 그리기·검사(assets/slide.js)는 굽는 순간에 이 스크립트가 넣는다.
 
 종료 코드
     0  PNG를 만들었다
-    1  굽지 못했다: Chrome 없음, 입력 오류, Mermaid를 못 불러옴·문법 오류
-    2  장표가 규칙을 어겼다: 넘침, 작은 글자, 빠진 구조, 채우지 않은 자리.
+    1  굽지 못했다: Chrome 없음, 입력 오류, Mermaid를 못 불러옴·문법 오류, 값 그림 문법 오류.
+       장표를 그려 본 뒤 실패했으면 예전에 구운 PNG를 지운다
+    2  장표가 규칙을 어겼다: 넘침, 작은 글자, 팔레트 밖 색, 강조 수, 값 그림의 줄·칸 수 상한,
+       빠진 구조, 채우지 않은 자리.
        PNG를 만들지 않는다. 글을 줄이거나 장표를 나눠 다시 굽는다
 
 필요한 것: python3, Chrome(또는 Chromium·Edge), Mermaid를 쓰는 장표는 인터넷(CDN).
@@ -130,12 +132,13 @@ def render(source, output, allow_slots=False):
         if not found:
             raise RenderFailed("Chrome이 장표를 끝까지 그리지 못했다. 장표 HTML이 깨졌는지 확인한다.")
         report = json.loads(unquote(found.group(1)))
+        if report["failure"] or report["problems"] or problems:
+            if output.exists():
+                output.unlink()  # 예전에 구운 PNG가 지금 내용인 것처럼 남지 않게 한다
         if report["failure"]:
             raise RenderFailed(report["failure"])
         problems += report["problems"]
         if problems:
-            if output.exists():
-                output.unlink()  # 예전에 구운 PNG가 지금 내용인 것처럼 남지 않게 한다
             raise SlideProblems(problems)
 
         # 2차: 찍는다

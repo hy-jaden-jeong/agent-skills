@@ -1,0 +1,41 @@
+<!-- 전후 장표 (before-after). 이 주석은 지워도 된다.
+  - "하고 나면 무엇이 바뀌나"에 답할 때 쓴다: 같은 구조의 두 시점(넣기 전·후, 배포 전·후, 정리 전·후). 위가 전, 아래가 후다.
+    서로 다른 두 방식을 견주면 slide-compare.html이다. 바뀌는 과정이 4단계 이상이라 한 장에 안 보이면 motion-graphics skill이다.
+  - 틀: .shift 안에 전 .group, 가운데 .link(↓와 일어난 일 한 줄), 후 .group. 묶음 제목(h3)은 "전"·"후" 시점을 짧게.
+  - 묶음 안에는 <pre class="tree">·<pre class="cells">·표(table.grid)·.card 중 하나를 같은 모양으로 둔다. 전과 후가 같은 문법이어야 견줄 수 있다.
+  - 좁고 높은 그림이면 class="shift side"로 왼쪽(전)·오른쪽(후)에 둔다.
+  - 바뀐 곳만 hl로 칠한다(전의 넘친 곳, 후의 새로 생긴 곳). 칠한 곳은 전후 합쳐 4곳까지.
+-->
+<h1>{{제목: 이 장표의 결론 한 문장}}</h1>
+<p class="subtitle">{{부제: 무엇을 하기 전과 후인지. 지어낸 값이면 (가상)}}</p>
+<div class="stage wide-diagram">
+<div class="diagram">
+<div class="shift">
+ <div class="group"><h3>{{넣기 전}}</h3>
+<pre class="tree">
+[* | 30 | * | 60 | *]
+  [10 | 20 | >]
+  [30 | 40 | >]
+  [60 | 70 | 80 | >]:::hl -- 가득 참
+</pre>
+ </div>
+ <div class="link">↓<small>{{일어난 일 한 줄}}</small></div>
+ <div class="group"><h3>{{넣은 뒤}}</h3>
+<pre class="tree">
+[* | 30 | * | 60 | * | 75:::hl | *]
+  [10 | 20 | >]
+  [30 | 40 | >]
+  [60 | 70 | >]
+  [75 | 80 | >]:::hl -- 새 leaf
+</pre>
+ </div>
+</div>
+</div>
+<div class="panel">
+<h3>핵심</h3><p class="key">{{가져갈 한 문장}}</p>
+<h3>용어</h3><ul><li><b>{{용어}}</b>: {{무엇인지 한 줄}}</li></ul>
+<h3>읽는 법</h3><ol><li>{{전 그림에서 볼 곳}}</li><li>{{무엇이 일어났는지}}</li><li>{{후 그림에서 바뀐 곳}}</li></ol>
+<p class="next"><b>이어지는 것</b> {{앞 장과의 연결, 실제 이름}}</p>
+</div>
+</div>
+<p class="source"><b>근거</b> {{코드 위치(path:line)·문서. 없으면 이 줄을 지운다}}</p>
