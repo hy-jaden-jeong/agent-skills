@@ -8,6 +8,7 @@
 - `name`은 폴더 이름과 같게 쓴다. `description`에는 무엇을 하는지와 언제 쓰는지(요청 예시 포함), 다른 skill과 나누는 경계를 쓴다.
 - skill끼리는 이름과 `<skills 폴더>/<이름>/` 경로로만 가리킨다. `<skills 폴더>`는 skill 폴더들이 나란히 설치되는 곳이다(`~/.claude/skills`, `~/.agents/skills`).
 - 스크립트는 자기 skill 폴더 안의 것만 import한다. 다른 skill의 스크립트를 import하지 않는다. skill 하나만 설치해도 그 skill의 스크립트가 돌아야 한다.
+- `agents/`에는 Claude Code subagent 정의(`<이름>.md`)를 둔다. skill은 그 정의가 없는 agent에서도 돌게 쓴다("있으면 맡기고, 없으면 직접").
 - 특정 agent에만 있는 도구(AskUserQuestion, Artifact 등)는 "있으면 쓰고, 없으면 이렇게"로 쓴다.
 
 ## 공개 레포
