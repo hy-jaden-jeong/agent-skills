@@ -1,0 +1,27 @@
+<!-- 양의 흐름 장표 (sankey). 이 주석은 지워도 된다.
+  - 단계를 지날 때마다 건수가 얼마나 남고, 어디로 갈라지고, 얼마나 빠지는지가 핵심일 때 쓴다. 띠 굵기가 양이다.
+  - 한 줄이 흐름 하나다: "보내는 곳, 받는 곳, 값". 값은 숫자만 쓰고 단위는 data-unit에 둔다(예: data-unit="건").
+  - 지금 볼 흐름 1~2개만 끝에 ", hl", 빠지는 양·오류 같은 진짜 문제는 ", bad"를 붙인다. 나머지는 회색이다.
+  - node는 10개까지. 작은 흐름은 "기타"로 묶는다. 같은 이름은 같은 node다.
+  - Mermaid sankey-beta는 쓰지 않는다. 색을 회색으로 맞출 수 없고 글자가 작다. 이 블록은 slide.js가 그린다.
+-->
+<h1>{{제목: 이 장표의 결론 한 문장}}</h1>
+<p class="subtitle">{{부제: 어느 날 몇 건을 따라갔는지. 지어낸 값이면 (가상)}}</p>
+<div class="stage">
+<div class="diagram">
+<pre class="sankey" data-unit="건">
+bronze, silver, 1000
+silver, gold, 820
+silver, 중복 제거, 180, bad
+gold, es_mart, 800, hl
+gold, 번역 대기, 20
+</pre>
+</div>
+<div class="panel">
+<h3>핵심</h3><p class="key">{{가져갈 한 문장}}</p>
+<h3>용어</h3><ul><li><b>{{용어}}</b>: {{무엇인지 한 줄}}</li></ul>
+<h3>읽는 법</h3><ol><li>{{그림을 따라가는 순서대로 한 문장}}</li><li>{{색칠한 곳이 왜 중요한지}}</li><li>{{다음 순서}}</li></ol>
+<p class="next"><b>이어지는 것</b> {{앞 장과의 연결, 실제 이름}}</p>
+</div>
+</div>
+<p class="source"><b>근거</b> {{코드 위치(path:line)·문서. 없으면 이 줄을 지운다}}</p>
