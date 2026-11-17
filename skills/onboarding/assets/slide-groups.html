@@ -1,0 +1,33 @@
+<!-- 묶음 장표 (상자). 두세 영역을 나란히 두고 각 영역 안에 항목을 세로로 쌓는다. 이 주석은 지워도 된다.
+  - 이름이 비슷한데 사는 곳이 다른 것을 가를 때 쓴다. Mermaid subgraph는 이 배치에서 글자가 작아진다.
+  - 묶음(.group) 2개가 기본. 3개면 class="columns three". 묶음 사이에 연결을 두려면 class="columns bridge"로 하고
+    두 묶음 사이에 <div class="link">⇄<small>무엇으로 이어지는지</small></div>를 넣는다. 4개 이상은 장표를 나눈다.
+  - 상자(.card)의 첫 <b>는 제목 줄. 상자는 색 없이 두고, 지금 볼 상자 1~2개만 hl, 진짜 문제만 bad로 칠한다.
+    한두 단어만 눈에 띄게 하려면 <span class="text-bad">처럼 글자색만 바꾼다.
+  - 묶음 아래로 흐름이 이어지면 <div class="link">↓<small>설명</small></div>와 <div class="card wide">를 둔다.
+-->
+<h1>{{제목: 이 장표의 결론 한 문장}}</h1>
+<p class="subtitle">{{부제: 무엇을 예로 들었는지, 언제 무엇으로 확인했는지}}</p>
+<div class="stage">
+<div class="diagram">
+ <div class="columns">
+  <div class="group"><h3>{{묶음 A: 어디인지}}</h3>
+   <div class="card hl"><b>{{항목 이름}}</b>{{한두 줄 설명}}</div>
+   <div class="card"><b>{{항목 이름}}</b>{{한두 줄 설명}}</div>
+  </div>
+  <div class="group"><h3>{{묶음 B: 어디인지}}</h3>
+   <div class="card"><b>{{항목 이름}}</b>{{한두 줄 설명}} · <span class="text-bad">{{눈에 띄어야 할 말}}</span></div>
+   <div class="card"><b>{{항목 이름}}</b>{{한두 줄 설명}}</div>
+  </div>
+ </div>
+ <div class="link">↓<small>{{무엇이 흘러가는지}}</small></div>
+ <div class="card wide"><b>{{결과}}</b>{{한 줄 설명}}</div>
+</div>
+<div class="panel">
+<h3>핵심</h3><p class="key">{{가져갈 한 문장}}</p>
+<h3>용어</h3><ul><li><b>{{용어}}</b>: {{무엇인지 한 줄}}</li></ul>
+<h3>읽는 법</h3><ol><li>{{왼쪽 묶음이 무엇인지}}</li><li>{{오른쪽 묶음이 무엇인지}}</li><li>{{파란 상자를 왜 봐야 하는지}}</li></ol>
+<p class="next"><b>이어지는 것</b> {{앞 장과의 연결, 실제 이름}}</p>
+</div>
+</div>
+<p class="source"><b>근거</b> {{코드 위치(path:line)·문서. 없으면 이 줄을 지운다}}</p>

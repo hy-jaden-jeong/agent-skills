@@ -1,0 +1,44 @@
+{
+  "title": "{{탭 제목: 두세 단어}}",
+  "heading": "{{제목: 무엇이 움직이는 모습인지 한 문장}}",
+  "lead": "{{무엇을 예로 들었는지 한두 문장. 지어낸 시각·값이면 (가상)이라고 쓴다.}}",
+  "source": "{{근거: 코드 위치(path:line)·문서. 없으면 이 줄을 지운다}}",
+  "result_title": "이 시나리오의 결과",
+  "state_labels": { "warn": "{{warn 상태를 이 주제에서 부르는 말. 안 쓰면 이 줄을 지운다}}" },
+  "nodes": [
+    { "id": "ingest", "sub": "원본 수집", "col": 0, "row": 0,
+      "desc": "{{이 상자가 하는 일 한 문장}}",
+      "facts": [["기다리는 것", "없음"], ["{{항목 이름}}", "{{값}}"]] },
+    { "id": "build", "sub": "집계", "col": 0, "row": 1, "desc": "{{이 상자가 하는 일 한 문장}}" },
+    { "id": "report", "sub": "리포트 발송", "col": 0, "row": 2, "desc": "{{이 상자가 하는 일 한 문장}}" },
+    { "id": "notify", "sub": "실패 알림", "col": 1.4, "row": 2, "desc": "{{이 상자가 하는 일 한 문장}}" }
+  ],
+  "edges": [
+    { "from": "ingest", "to": "build" },
+    { "from": "build", "to": "report" },
+    { "from": "build", "to": "notify", "from_side": "right", "to_side": "top", "tag": "watch" }
+  ],
+  "groups": [{ "label": "{{묶음 이름: job·시스템 이름 등}}", "nodes": "*" }],
+  "scenarios": [
+    {
+      "name": "① 정상인 날",
+      "steps": [
+        { "t": "02:00", "set": { "ingest": "run" }, "text": "{{이 단계에서 무엇이 왜 바뀌는지 한두 문장}}" },
+        { "t": "02:10", "set": { "ingest": "ok", "build": "run" }, "text": "{{앞 상자가 끝나 다음 상자가 이어받는 모습}}" },
+        { "t": "02:20", "set": { "build": "ok", "report": "run" }, "text": "{{다음 단계}}" },
+        { "t": "02:22", "set": { "report": "ok", "notify": "skip" }, "text": "{{마지막 단계: 이 시나리오의 결론}}" }
+      ],
+      "result": [["결과", "{{값}}", "good"], ["알림", "없음"]]
+    },
+    {
+      "name": "② ingest가 실패한 날",
+      "steps": [
+        { "t": "02:00", "set": { "ingest": "run" }, "text": "{{출발은 정상인 날과 같다}}" },
+        { "t": "02:10", "set": { "ingest": "fail", "build": "blocked", "report": "blocked" }, "text": "{{무엇이 실패했고 무엇이 따라서 멈추는지}}" },
+        { "t": "02:11", "set": { "notify": ["run", "알림 보내는 중"] }, "text": "{{실패를 누가 어떻게 알게 되는지}}" },
+        { "t": "02:12", "set": { "notify": "ok" }, "text": "{{마지막 단계: 이 시나리오의 결론}}" }
+      ],
+      "result": [["결과", "{{값}}", "bad"], ["알림", "{{값}}", "warn"]]
+    }
+  ]
+}

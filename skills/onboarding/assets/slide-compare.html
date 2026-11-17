@@ -1,0 +1,36 @@
+<!-- 대응 장표 (상자). 같은 예시 데이터를 두 모양으로 위아래에 그리고, 같은 것끼리 같은 색을 칠한다. 이 주석은 지워도 된다.
+  - 개념끼리 대응(table ↔ index 같은 것)을 가르칠 때 쓴다. "A ─ B" 상자 짝만 늘어놓은 그림은 처음 보는 사람이 이해하지 못한다.
+  - 위는 표 격자(table.grid), 아래는 한 건씩 카드(.card + .fields). 표의 한 줄과 카드 한 장에 같은 색을 준다.
+    첫째 짝은 hl(파랑), 둘째 짝은 alt(주황). 색은 이 두 가지만 쓴다.
+  - 머리줄의 칸 이름과 카드의 <i>칸 이름</i>은 같은 굵은 글자다. 이름이 그대로 옮겨진다는 것은 글자 자체로 보인다.
+  - 표는 3~4칸, 2줄까지. 값은 짧은 실제 값을 쓰고, 지어냈으면 부제에 (가상)이라고 적는다.
+-->
+<h1>{{제목: 같은 것을 두 모양으로 담는다는 결론 한 문장}}</h1>
+<p class="subtitle">{{부제: 내용은 같고 모양만 다르다. 같은 색끼리 같은 것. 지어낸 값이면 (가상)}}</p>
+<div class="stage wide-diagram">
+<div class="diagram">
+ <div class="group wide"><h3>{{위 모양: 어디의 무엇인지}}</h3>
+  <table class="grid">
+   <tr><th>{{칸 이름 1}}</th><th>{{칸 이름 2}}</th><th>{{칸 이름 3}}</th></tr>
+   <tr class="hl"><td>{{값}}</td><td>{{값}}</td><td>{{값}}</td></tr>
+   <tr class="alt"><td>{{값}}</td><td>{{값}}</td><td>{{값}}</td></tr>
+  </table>
+  <p class="note">{{위에서 부르는 말: 머리줄과 한 줄의 이름}}</p>
+ </div>
+ <div class="link inline">↓<small>{{무엇이 무엇으로 옮겨지는지}}</small></div>
+ <div class="group wide"><h3>{{아래 모양: 어디의 무엇인지}}</h3>
+  <div class="columns">
+   <div class="card hl"><b>{{첫째 건}}</b><div class="fields"><i>{{칸 이름 2}}</i>: {{값}}<br><i>{{칸 이름 3}}</i>: {{값}}</div></div>
+   <div class="card alt"><b>{{둘째 건}}</b><div class="fields"><i>{{칸 이름 2}}</i>: {{값}}<br><i>{{칸 이름 3}}</i>: {{값}}</div></div>
+  </div>
+  <p class="note">{{아래에서 부르는 말: 칸 이름과 한 건의 이름}}</p>
+ </div>
+</div>
+<div class="panel">
+<h3>핵심</h3><p class="key">{{가져갈 한 문장}}</p>
+<h3>용어</h3><ul><li><b>{{위 모양의 말들}}</b>: {{한 줄 뜻}}</li><li><b>{{아래 모양의 말들}}</b>: {{한 줄 뜻}}</li></ul>
+<h3>읽는 법</h3><ol><li>{{위가 무엇인지}}</li><li>{{파란 줄을 따라 아래의 파란 카드로}}</li><li>{{칸 이름이 어떻게 옮겨지는지}}</li></ol>
+<p class="next"><b>이어지는 것</b> {{앞 장과의 연결, 실제 이름}}</p>
+</div>
+</div>
+<p class="source"><b>근거</b> {{코드 위치(path:line)·문서. 없으면 이 줄을 지운다}}</p>
