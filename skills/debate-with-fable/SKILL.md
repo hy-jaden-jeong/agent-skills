@@ -1,6 +1,6 @@
 ---
 name: debate-with-fable
-description: 메인은 작업 모델(Opus)로 두고, 판단이 무거운 순간에만 가장 강한 모델(Fable)과 토론한다. 설계, 접근법부터 찾아야 하는 문제, 되돌리기 비싼 결정, 같은 문제를 두 번 고쳐도 안 풀릴 때 Fable subagent와 서로의 안을 모른 채 각자 안을 내고, 견줘 합친 결론 하나를 들고 온다. "설계해줘", "구조 잡아줘", "Fable과 토론해", "같이 생각해 봐" 요청과 위 네 순간에 쓴다. 사용자와 묻고 답하는 법은 grill-me, spec을 남기는 개발 흐름은 spec-driven skill이 맡는다.
+description: 메인은 작업 모델(Opus)로 두고, 판단이 무거운 순간에만 가장 강한 모델(Fable)과 토론한다. 설계, 접근법부터 찾아야 하는 문제, 되돌리기 비싼 결정, 같은 문제를 두 번 고쳐도 안 풀릴 때 Fable subagent와 서로의 안을 모른 채 각자 안을 내고, 견줘 합친 결론 하나를 들고 온다. "설계해줘", "구조 잡아줘", "Fable과 토론해", "같이 생각해 봐" 요청과 위 네 순간에 쓴다. 사용자와 묻고 답하는 법과 spec 확정은 grill-me, 확정된 spec을 만들고 검증하는 일은 build-to-spec skill이 맡는다.
 ---
 
 # debate with Fable
@@ -31,7 +31,7 @@ description: 메인은 작업 모델(Opus)로 두고, 판단이 무거운 순간
 
 - 사용자가 "Fable과 토론해"라고 하면 위 표와 상관없이 토론한다.
 - 같은 문제를 두 번 고쳤는데 안 풀리면 effort를 올리지 않고 바로 토론한다. effort를 올리는 것은 틀리지는 않았지만 결과가 얕을 때다.
-- spec을 남기는 설계(코드가 있는 일)는 `spec-driven` skill을 먼저 부른다. 그 skill의 설계 단계가 이 skill의 "토론하는 법"을 쓴다. 사용자와 문제를 먼저 맞추고 나서 토론하기 위해서다. spec 없이 정할 것 하나를 두고 토론할 때는 이 skill을 바로 쓴다.
+- spec을 남기는 설계(코드가 있는 일)는 `grill-me` skill을 먼저 부른다. 그 skill의 설계 자리(`<skills 폴더>/grill-me/references/design.md`)가 이 skill의 "토론하는 법"을 쓴다. 사용자와 문제를 먼저 맞추고 나서 토론하기 위해서다. spec 없이 정할 것 하나를 두고 토론할 때는 이 skill을 바로 쓴다.
 
 ## 토론하는 법
 
