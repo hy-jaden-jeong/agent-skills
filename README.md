@@ -11,14 +11,14 @@
 | [teach-me](skills/teach-me/SKILL.md) | 문서·레포·시스템을 단계별 장표·모션그래픽·퀴즈로 가르친다. 그림은 위 두 skill에 맡긴다 |
 | [grill-me](skills/grill-me/SKILL.md) | 계획·결정·아이디어를 끝까지 인터뷰한다. 정할 것을 모두 찾아 추천과 함께 묻고, 필요한 만큼 가르치고, 결정 목록을 확정받는다. 주제는 코드가 아니어도 되고 파일을 남기지 않는다 |
 | [spec-driven](skills/spec-driven/SKILL.md) | 코드가 있는 일을 spec 한 파일로 확정하고 그 spec을 기준으로 구현하고 검증한다. 문제 맞추기 → 설계 → 인터뷰 → spec 확정 → slice 나누기 → 구현 → 검증. 설계까지만 하거나 중간 단계부터 시작할 수 있다 |
-| [think-with-fable](skills/think-with-fable/SKILL.md) | 메인은 작업 모델(Opus)로 두고, 설계·접근법을 찾을 문제·되돌리기 비싼 결정·두 번 실패한 문제에서만 판단 모델(Fable)과 각자 안을 내고 견줘 결론 하나를 들고 온다. 가벼운 확인은 advisor로 묻는다 |
+| [debate-with-fable](skills/debate-with-fable/SKILL.md) | 메인은 작업 모델(Opus)로 두고, 설계·접근법을 찾을 문제·되돌리기 비싼 결정·두 번 실패한 문제에서만 판단 모델(Fable)과 각자 안을 내고 견줘 결론 하나를 들고 온다 |
 
 함께 설치할 것이 있다. skill은 다른 skill을 같은 skills 폴더에서 찾는다.
 
 - `teach-me`는 `diagram-slides`와 `motion-graphics`를 쓴다.
 - `spec-driven`은 사용자에게 묻는 법을 `grill-me`에서 읽는다.
-- `spec-driven`은 `think-with-fable`이 있으면 설계 후보를 그 skill의 토론으로 만든다.
-- `think-with-fable`은 사용자에게 묻는 법을 `grill-me`에서 읽는다.
+- `spec-driven`은 `debate-with-fable`이 있으면 설계 후보를 그 skill의 토론으로 만든다.
+- `debate-with-fable`은 사용자에게 묻는 법을 `grill-me`에서 읽는다.
 
 ## 설치
 
@@ -44,7 +44,7 @@ Claude Code subagent 정의 (`~/.claude/agents`). skill들이 이 이름으로 s
 
 | 에이전트 | 모델 | 맡는 일 |
 | --- | --- | --- |
-| `fable-solver` | Fable, effort `high` | `think-with-fable`의 토론 상대, 통째로 맡길 어려운 조각 |
+| `fable-solver` | Fable, effort `high` | `debate-with-fable`의 토론 상대, 통째로 맡길 어려운 조각 |
 | `opus-worker` | Opus, effort `high` | 판단이 필요한 구현·분석·조사·검토 |
 | `sonnet-worker` | Sonnet, effort `medium` | 그리기, 정해진 대로 고치기, 단순 검색 |
 
@@ -52,13 +52,11 @@ Claude Code subagent 정의 (`~/.claude/agents`). skill들이 이 이름으로 s
 mkdir -p ~/.claude/agents && for a in ~/agent-skills/agents/*.md; do ln -sfn "$a" ~/.claude/agents/"$(basename "$a")"; done
 ```
 
-advisor는 Claude Code에서 `/advisor`로 한 번 골라 둔다. `think-with-fable`이 가벼운 확인에 쓴다.
-
 ## 필요한 것
 
 - python3, Google Chrome(또는 Chromium·Edge). Chrome이 기본 위치에 없으면 `CHROME_PATH`에 실행 파일 경로를 넣는다
 - 인터넷: 장표는 Mermaid를 CDN에서 불러온다
-- `grill-me`, `spec-driven`, `think-with-fable`은 스크립트가 없어 따로 필요한 것이 없다
+- `grill-me`, `spec-driven`, `debate-with-fable`은 스크립트가 없어 따로 필요한 것이 없다
 - 장표·모션그래픽 설치 확인
 
   ```bash
