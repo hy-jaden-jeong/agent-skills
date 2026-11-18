@@ -6,7 +6,7 @@
     python3 render_slide.py --check                    설치 확인: 견본 장표를 구워 본다
 
 장표 파일에는 body 안쪽만 쓴다(assets/slide-*.html 견본). 스타일(assets/slide.css)과
-Mermaid 설정·값 그림(sankey·timebar·cells·tree·quadrant) 그리기·검사(assets/slide.js)는 굽는 순간에 이 스크립트가 넣는다.
+Mermaid 설정·값 그림(sankey·timebar·cells·tree·quadrant·line·bar) 그리기·검사(assets/slide.js)는 굽는 순간에 이 스크립트가 넣는다.
 
 종료 코드
     0  PNG를 만들었다

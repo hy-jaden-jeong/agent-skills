@@ -1,6 +1,6 @@
 ---
 name: diagram-slides
-description: 설명을 16:9 다크 모드 장표(PNG) 한 장에 굽는다. 제목이 결론이고, 그림이 폭 전체를 쓰며 사물을 제 모양(값이 든 표, 겹친 상자)으로 그려 그림만 보고 결론이 보이게 한다. 흐름(flowchart), 묶음, 담는 상자(nest), 표 두 개(sheets), cells(칸 줄), tree, stack(층), 주고받기(sequence), 사건 순서(timeline), 시간 막대, 양의 흐름(sankey), 상태(state), 전후, 대응, 비교표, 2x2, 용어 표 견본 중 장표가 답하는 질문에 맞는 모양을 골라 채운다. 구조·흐름·대응을 그림으로 설명할 때, "그림으로 보여줘", "다이어그램 그려줘", "장표로 만들어줘" 요청에 쓴다.
+description: 설명을 16:9 다크 모드 장표(PNG) 한 장에 굽는다. 제목이 결론이고, 그림이 폭 전체를 쓰며 사물을 제 모양(값이 든 표, 겹친 상자)으로 그려 그림만 보고 결론이 보이게 한다. 흐름(flowchart), 묶음, 담는 상자(nest), 표 두 개(sheets), cells(칸 줄), tree, stack(층), 주고받기(sequence), 사건 순서(timeline), 시간 막대, 양의 흐름(sankey), 상태(state), 선 그래프(line), 막대(bar), 전후, 대응, 비교표, 2x2, 용어 표 견본 중 장표가 답하는 질문에 맞는 모양을 골라 채운다. 구조·흐름·대응을 그림으로 설명할 때, "그림으로 보여줘", "다이어그램 그려줘", "장표로 만들어줘" 요청에 쓴다.
 ---
 
 # 장표 만드는 법
@@ -68,11 +68,13 @@ description: 설명을 16:9 다크 모드 장표(PNG) 한 장에 굽는다. 제�
 | 흐름·시간 | 언제 시작해 얼마나 걸리나, 겹치나, 기다리나 | 시간 막대 (값으로 그림) | `slide-timebar.html` |
 | 흐름·시간 | 단계마다 얼마나 남고 어디로 갈라지고 얼마나 빠지나 | 양의 흐름 (값으로 그림) | `slide-sankey.html` |
 | 흐름·시간 | 어떤 event에 어느 상태로 가나 | state (Mermaid stateDiagram-v2) | `slide-state.html` |
+| 흐름·시간 | 값이 시간에 따라 어떻게 변하나 (응답 시간 추이, 일별 실패 건수) | 선 그래프 line (값으로 그림) | `slide-line.html` |
 | 변화 | 하고 나면 무엇이 바뀌나 | before-after (같은 그림 두 시점) | `slide-before-after.html` |
 | 견줌 | 같은 것이 두 곳에서 어떤 모양인가 | 대응 (표 + 카드) | `slide-compare.html` |
 | 견줌 | 이 table·view는 저 table의 무엇을 가져가나, 값이 어떻게 달라지나 | 표 두 개 (값이 든 표, 이어진 column) | `slide-sheets.html` |
 | 견줌 | 선택지마다 무엇이 되나 | matrix (비교표) | `slide-matrix.html` |
 | 견줌 | 두 기준으로 놓으면 선택지가 어디에 서나 | quadrant (2x2, 값으로 그림) | `slide-quadrant.html` |
+| 견줌 | 항목끼리 크기가 어떻게 다른가 (API별 응답 시간, table별 row 수) | 막대 bar (가로 막대, 값으로 그림) | `slide-bar.html` |
 | 용어 | 용어 정리 | 용어 표 | `slide-glossary.html` |
 
 - 헷갈리는 짝
@@ -86,6 +88,9 @@ description: 설명을 16:9 다크 모드 장표(PNG) 한 장에 굽는다. 제�
   - before-after와 compare: 같은 것의 두 시점이면 before-after, 같은 것이 두 곳(두 층, 두 system)에서 다른 모양이면 compare다.
   - state와 flow·timeline: 한 대상이 event마다 상태를 오가는 규칙(되돌아가는 화살표 포함)이면 state, 일이 넘어가는 길이면 flow, 실제로 일어난 차례면 timeline이다.
   - stack과 flow: 위 층이 아래 층을 써서 돈다(화살표 없음)면 stack, 요청이 층을 차례로 지나가는 길이면 flow다.
+  - line과 timebar: 같은 값이 시점마다 얼마인지(오르내림)가 핵심이면 line, 일이 언제 시작해 얼마나 걸리는지면 timebar다.
+  - line과 bar: 가로축이 시간이고 흐름이 보여야 하면 line, 서로 다른 항목의 크기를 한 시점에서 견주면 bar다. 시점 두 개뿐이면 before-after나 bar로 충분한지 먼저 본다.
+  - bar와 sankey: 항목이 서로 독립이면 bar, 앞 단계의 양이 다음 단계로 갈라지고 빠지면 sankey다.
   - matrix와 compare·quadrant: 선택지 3~4개를 기준 여러 개로 ✓/✕ 하면 matrix, 두 방식을 그림으로 나란히 보이면 compare, 두 기준 위의 위치·치우침이 중요하면 quadrant다.
 - 고른 모양은 서브에이전트 지시문과, 기록해 두는 곳이 있으면 거기(예: teach-me의 `deck-spec.md`)에 "모양: <모양> — <이유 한 줄>"로 적는다(예: "모양: 시간 막대 — 집계 job이 늦게 끝나 리포트 마감을 넘기는 게 핵심"). 이유가 "상자로 그리기 쉬워서"면 다시 고른다.
 - 견본마다 맨 위 주석에 그 견본의 쓰는 법, 문법, 분량 기준이 있다. 견본에 없는 모양이 꼭 필요할 때만 장표 안에 `<style>`을 몇 줄 더한다.
@@ -102,13 +107,13 @@ description: 설명을 16:9 다크 모드 장표(PNG) 한 장에 굽는다. 제�
 
 ### 표에 없는 모양을 더하려면
 
-Mermaid에는 이 밖에도 종류가 많다(erDiagram, xychart, quadrantChart 등). 표에 없는 종류는 기본 색이 무지개색이거나 글자가 작아서, `render_slide.py`가 "팔레트 밖 색"이나 "최소 크기보다 작다"로 PNG를 막을 수 있다. 꼭 필요하면 아래 순서로 표에 더한다.
+Mermaid에는 이 밖에도 종류가 많다(erDiagram, quadrantChart 등). 표에 없는 종류는 기본 색이 무지개색이거나 글자가 작아서, `render_slide.py`가 "팔레트 밖 색"이나 "최소 크기보다 작다"로 PNG를 막을 수 있다. 꼭 필요하면 아래 순서로 표에 더한다.
 
 1. 그 종류로 장표를 구워 본다. 막히면 `assets/slide.js`에 그 종류의 색·글자 크기 설정을 더한다(sequence·timeline·state 설정이 예시다).
 2. 회색 바탕에 강조 1~2곳, 글자 18px 이상으로 나오면 견본(`slide-<종류>.html`)을 만들고 `--check`로 굽는다.
 3. 이 표에 한 줄, `slide.js`의 `MERMAID_KINDS`에 이름을 더한다.
 
-Mermaid `sankey-beta`, `gantt`, `quadrantChart`, `block-beta`는 쓰지 않는다. 색을 회색으로 맞출 수 없거나 글자가 작거나 칸에서 나가는 화살표를 못 그려서 `slide-sankey`·`slide-timebar`·`slide-quadrant`·`slide-cells`를 따로 만들었다.
+Mermaid `sankey-beta`, `gantt`, `quadrantChart`, `xychart-beta`, `block-beta`는 쓰지 않는다. 색을 회색으로 맞출 수 없거나 글자가 작거나 칸에서 나가는 화살표를 못 그려서 `slide-sankey`·`slide-timebar`·`slide-quadrant`·`slide-line`·`slide-bar`·`slide-cells`를 따로 만들었다.
 
 ## 만들고 굽기
 
@@ -165,10 +170,11 @@ stateDiagram-v2
 - 한 줄이 전이 하나다. 강조는 `class X hl`, 진짜 문제 상태는 `class X bad`이다. classDef는 쓰지 않는다. `slide.js`가 팔레트 색으로 붙이고, 장표에 쓴 색은 덮어쓴다.
 - `class`를 붙일 상태 이름은 영문·숫자·_로 쓴다. 한글로 보이려면 `state "결제됨" as paid`로 별칭을 붙인다. 한글 이름에 바로 `class`를 붙이면 Mermaid 문법 오류다.
 
-값으로 그림 (sankey·timebar·cells·tree·quadrant, Mermaid 아님)
+값으로 그림 (sankey·timebar·cells·tree·quadrant·line·bar, Mermaid 아님)
 
-- `<pre class="sankey|timebar|cells|tree|quadrant">` 블록에 값 줄만 쓰면 `slide.js`가 SVG로 그린다. 문법은 견본 주석에 있다.
-- sankey·timebar·quadrant는 줄 끝에 `, hl`(또는 `, alt`, `, bad`)를 붙여 칠한다. 단위는 `data-unit="건"`처럼 블록에 둔다.
+- `<pre class="sankey|timebar|cells|tree|quadrant|line|bar">` 블록에 값 줄만 쓰면 `slide.js`가 SVG로 그린다. 문법은 견본 주석에 있다.
+- sankey·timebar·quadrant·line·bar는 줄 끝에 `, hl`(또는 `, alt`, `, bad`)를 붙여 칠한다. 단위는 `data-unit="건"`처럼 블록에 둔다.
+- line·bar의 값에는 천 단위 쉼표를 쓰지 않는다(쉼표는 칸을 나눈다). `1200`이나 `1_200`으로 쓴다. line은 세로축이 늘 0을 품고, 값 뒤 `*`로 그 점에 값을 적고(꺾인 곳 1~2곳), `| 칸 이름, 사건`으로 세로 점선, `= 값, 이름`으로 기준 가로 점선을 긋는다. bar는 `| 값, 이름`으로 기준 세로 점선을 긋는다. 값 글자·끝 라벨·점선 이름이 겹치면 코드 2로 막는다.
 - cells·tree는 칸 끝에 `:::hl`을 붙인다. 칸 하나는 "글 ; 칸 아래 설명 /폭비율 :::hl" 차례로 쓴다. 차례가 바뀌거나, `[`를 닫지 않거나, 이름·메모·층 이름에 `:::`·`/N`이 남거나, 들여쓰기가 스페이스 2칸씩이 아니면 몇 번째 줄인지 알리고 굽지 않는다. 문법 기호가 글자로 찍힌 PNG는 나오지 않는다.
 - 값 그림은 `.diagram` 안에 둔다. 밖(아래 글 등)에 두면 그려지지 않으므로 코드 2로 막는다. `%%`로 시작하는 줄은 주석이다.
 
