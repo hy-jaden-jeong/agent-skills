@@ -35,11 +35,10 @@ subagent 정의를 고쳤으면 만든 파일이 원본과 맞는지 본다(종�
 python3 scripts/build_agents.py --check
 ```
 
-장표·모션그래픽 skill을 고쳤으면 두 확인도 돌려 둘 다 종료 코드 0인지 본다.
+장표 skill을 고쳤으면 이 확인도 돌려 종료 코드 0인지 본다.
 
 ```bash
 python3 skills/diagram-slides/scripts/render_slide.py --check
-python3 skills/motion-graphics/scripts/render_motion.py --check
 ```
 
 Claude 데스크톱 앱에서는 Write·Edit 도구로 `.html`을 쓰면 Browser pane이 열린다. 그 앱에서는 `.html` 파일을 Bash(heredoc, `sed`, `python3`)로 고친다.
