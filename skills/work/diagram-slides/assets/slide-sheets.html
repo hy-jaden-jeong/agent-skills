@@ -1,0 +1,51 @@
+<!-- 표 두 개 장표 (값이 든 표). 이 주석은 지워도 된다.
+  - "이 table·view는 저 table의 무엇을 가져가나, 값이 어떻게 달라지나"에 답할 때 쓴다. table을 이름 상자로 그리지 않고 실제 column과 값 3 row로 그린다.
+  - 위 .sheet가 원본, 아래 .sheet가 그것을 읽는 쪽이다. 이어지는 column을 둘 다 <col class="hl">로 칠하고, 사이 .pass의 .go(▼ 내려간다)와 .stop(✕ 막힌다)으로 무엇이 건너가고 무엇이 막히는지 보인다.
+  - --c1은 이어지는 column 폭(두 표의 첫 <col> 폭과 같게), --stack-w는 표 폭이다. 이어지는 column이 첫 column이 아니면 column 순서를 바꿔 첫 칸에 둔다.
+  - view는 <div class="sheet view">(점선), 볼 때마다 계산하는 값은 <td class="f">(ƒ)로 쓴다. 지운 row는 <tr class="gone">.
+  - 오른쪽 .feed는 표에 값을 넣는 쪽(job, 원천)이다. 위는 .feed up, 아래는 .feed down. 주황 화살표는 <span class="arrow text-alt">.
+  - ①②③ 딱지는 .go, .stop, .feed에 붙인다. 딱지 하나는 공백 빼고 24자 안.
+  - 칠한 곳: 위·아래 hl column 2곳 + 아래 alt column 1곳까지가 기본이다(4곳 한도).
+-->
+<h1>{{제목: 이 장표의 결론 한 문장}}</h1>
+<p class="subtitle">{{부제: 배우는 사람의 질문 · 무엇을 예로 들었는지, 값은 (가상)}}</p>
+<div class="stage">
+<div class="diagram">
+<div class="scene-stack" style="--c1:250px">
+ <div class="sheet">
+  <div class="sheet-name"><b>{{원본 이름}}</b><span class="kind">table</span>{{짧은 딱지}}</div>
+  <table>
+   <colgroup><col class="hl" style="width:250px"><col><col><col></colgroup>
+   <tr><th>{{이어지는 column}}</th><th>{{column}}</th><th>{{column}}</th><th>{{column}}</th></tr>
+   <tr><td>{{값}}</td><td>{{값}}</td><td>{{값}}</td><td>{{값}}</td></tr>
+   <tr><td>{{값}}</td><td>{{값}}</td><td>{{값}}</td><td>{{값}}</td></tr>
+   <tr><td>{{값}}</td><td>{{값}}</td><td>{{값}}</td><td>{{값}}</td></tr>
+  </table>
+ </div>
+ <div class="feed up"><span class="arrow"></span><div class="from"><b>{{값을 넣는 쪽}}</b><small>{{짧은 딱지}}</small></div></div>
+
+ <div class="pass">
+  <div class="go"><i>▼</i><span>① {{건너가는 것}}</span></div>
+  <div class="stop">✕ ② {{막히는 것}}</div>
+ </div>
+ <div></div>
+
+ <div class="sheet view">
+  <table>
+   <colgroup><col class="hl" style="width:250px"><col class="alt" span="3"></colgroup>
+   <tr><th>{{이어지는 column}}</th><th>{{column}}</th><th>{{column}}</th><th>{{column}}</th></tr>
+   <tr><td>{{값}}</td><td class="f">{{값}}</td><td class="f">{{값}}</td><td class="f">{{값}}</td></tr>
+   <tr><td>{{값}}</td><td class="f">{{값}}</td><td class="f">{{값}}</td><td class="f">{{값}}</td></tr>
+   <tr><td>{{값}}</td><td class="f">{{값}}</td><td class="f">{{값}}</td><td class="f">{{값}}</td></tr>
+  </table>
+  <div class="sheet-name" style="margin:8px 0 0"><b>{{읽는 쪽 이름}}</b><span class="kind">view</span>{{짧은 딱지}}</div>
+ </div>
+ <div class="feed down"><span class="arrow text-alt"></span><div class="from"><b class="text-alt">③ {{나머지 값이 오는 곳}}</b>
+  <ul><li><b>{{무엇}}</b> {{어디서}}</li><li><b>{{무엇}}</b> {{어디서}}</li></ul></div></div>
+</div>
+</div>
+<div class="panel">
+<p class="key">{{그래서: 그림을 보고 가져갈 한두 문장. 공백 빼고 90자까지}}</p>
+</div>
+</div>
+<p class="source"><b>근거</b> {{코드 위치(path:line)·문서. 없으면 이 줄을 지운다}}</p>

@@ -13,7 +13,7 @@
 
 | skill | 하는 일 |
 | --- | --- |
-| [diagram-slides](skills/work/diagram-slides/SKILL.md) | 설명을 16:9 다크 모드 장표(PNG)로 굽는다. 그림 하나와 설명 패널(핵심·용어·읽는 법)을 담고, 내용에 맞는 모양(흐름, 묶음, 대응, 주고받기, 사건 순서, 시간 막대, 양의 흐름)을 골라 그린다 |
+| [diagram-slides](skills/work/diagram-slides/SKILL.md) | 설명을 16:9 다크 모드 장표(PNG)로 굽는다. 제목이 결론이고, 그림이 폭 전체를 쓰며 사물을 제 모양(값이 든 표, 겹친 상자)으로 그려 그림만 보고 결론이 보이게 한다. 내용에 맞는 모양(흐름, 묶음, 담는 상자, 표 두 개, 대응, 주고받기, 사건 순서, 시간 막대, 양의 흐름)을 골라 그린다 |
 | [teach-me](skills/work/teach-me/SKILL.md) | 문서·레포·시스템을 단계별 장표·퀴즈로 가르친다. 그림은 `diagram-slides`에 맡긴다 |
 | [grill-me](skills/work/grill-me/SKILL.md) | 계획·결정·아이디어를 끝까지 인터뷰한다. 정할 것을 모두 찾아 추천과 함께 묻고, 필요한 만큼 가르치고, 결정 목록을 확정받는다. 코드가 없는 주제는 파일 없이 끝내고, 만들 일이면 문제 맞추기 → 설계 → 인터뷰 → 확정으로 spec 한 파일을 확정한다 |
 | [build-to-spec](skills/work/build-to-spec/SKILL.md) | 확정된 spec대로 만들고 증명한다. slice 나누기 → 구현(실패하는 test 먼저, 기존 출력은 golden master로 지킴) → 세 방향 검증. spec 파일이 진행 상태라 끊긴 구현을 이어 간다 |
