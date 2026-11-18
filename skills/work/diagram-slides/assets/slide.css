@@ -1,10 +1,10 @@
 /* 장표 스타일: 16:9 고정 캔버스(1600x900), 다크 모드.
    render_slide.py가 굽는 순간에 이 파일을 장표에 넣는다. 장표 파일에서 따로 불러오지 않는다.
 
-   장표 구조
+   장표 구조 (장면 장표)
      h1          결론 한 문장 (한 줄)
-     .subtitle   예시 설명 (한 줄)
-     .stage      본문 2단: .diagram(왼쪽 그림) | .panel(오른쪽 설명)
+     .subtitle   배우는 사람의 질문 · 무엇을 예로 들었는지 (한 줄)
+     .stage      위: .diagram(그림, 폭 전체) / 아래: .panel(.key "그래서" 한두 문장)
      .source     근거·코드 위치 (선택, 1~2줄)
 
    글자 크기를 줄여 맞추지 않는다. 넘치면 render_slide.py가 알려 주고 PNG를 만들지 않는다. */
@@ -32,13 +32,11 @@ code{font-family:var(--mono);font-size:.88em;color:var(--text-soft)}
 body>h1{font-size:37px;font-weight:800;line-height:1.25;margin-bottom:6px;color:var(--text-strong);white-space:nowrap;overflow:hidden}
 body>.subtitle{font-size:21px;margin-bottom:22px;color:var(--text-dim);white-space:nowrap;overflow:hidden}
 
-/* 본문 2단. 기본 61:39. 그림이 넓으면 wide-diagram(66:34), 설명이 길면 wide-panel(56:44), 그림이 세로로 좁으면 even(50:50) */
-.stage{display:grid;grid-template-columns:61fr 39fr;gap:30px;min-height:0}
-.stage.wide-diagram{grid-template-columns:66fr 34fr}
-.stage.wide-panel{grid-template-columns:56fr 44fr}
-.stage.even{grid-template-columns:1fr 1fr}
+/* 본문: 그림이 위 전체를 쓰고, 아래에 "그래서" 한두 문장(.panel .key)만 둔다. 읽는 법·용어 칸은 없다.
+   그림에 붙일 말은 ①②③ 딱지로 그림의 그 자리에 쓴다 */
+.stage{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;gap:16px;min-height:0}
 
-/* 왼쪽: 그림 */
+/* 그림 */
 .diagram{min-height:0;min-width:0;overflow:hidden;display:flex;flex-direction:column;
   justify-content:safe center;align-items:center;gap:14px}
 /* Mermaid와 값으로 그리는 그림(sankey, timebar)은 남은 높이를 다 쓰고 가운데 놓인다 */
@@ -46,17 +44,11 @@ body>.subtitle{font-size:21px;margin-bottom:22px;color:var(--text-dim);white-spa
   display:flex;align-items:center;justify-content:center;white-space:normal;font-family:var(--font)}
 .diagram svg.chart{overflow:visible}
 
-/* 오른쪽: 설명 (핵심 → 용어 → 읽는 법 → 이어지는 것) */
-.panel{min-height:0;min-width:0;overflow:hidden;display:flex;flex-direction:column;
-  background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:20px 26px 18px}
-.panel h3{font-size:17px;font-weight:700;letter-spacing:.04em;margin:14px 0 4px;color:var(--text-dim)}
-.panel h3:first-child{margin-top:0}
-.panel .key{font-size:25px;font-weight:700;line-height:1.42;margin-top:4px;padding:12px 16px;color:var(--text-strong);
+/* 아래: "그래서" 한두 문장 */
+.panel{min-height:0;min-width:0;overflow:hidden;display:flex;align-items:center;
+  background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 18px}
+.panel .key{flex:1;margin:0;font-size:25px;font-weight:700;line-height:1.4;padding:8px 18px;color:var(--text-strong);
   background:var(--box);border-left:4px solid var(--hl);border-radius:6px}
-.panel ul,.panel ol{margin-left:24px}
-.panel li{margin:3px 0}
-.panel li::marker{color:var(--text-dim);font-weight:700}
-.panel .next{margin-top:auto;padding-top:10px;border-top:1px solid var(--line);font-size:17px;color:var(--text-soft)}
 
 /* 맨 아래: 근거 */
 .source{margin-top:14px;padding-top:9px;border-top:1px solid var(--line);font-size:17px;color:var(--text-dim)}
@@ -101,7 +93,7 @@ table.grid th{font-family:var(--mono);font-size:16px;color:var(--text-strong);ba
 .card.hl,.card.alt,.card.bad,.group.hl,.group.alt,.group.bad{border-width:2px}
 .hl>b:first-child{color:var(--hl-text)}.alt>b:first-child{color:var(--alt-text)}.bad>b:first-child{color:var(--bad-text)}
 /* 글자색만(칠한 곳으로 세지 않는다) */
-.text-hl{color:var(--hl-text)}.text-bad{color:var(--bad-text)}
+.text-hl{color:var(--hl-text)}.text-alt{color:var(--alt-text)}.text-bad{color:var(--bad-text)}
 
 /* 값으로 그리는 그림이 묶음(.group) 안에 들어갈 때(전후 장표): 제 높이만큼만 차지한다 */
 .group pre.cells,.group pre.tree{display:flex;justify-content:center;width:100%;white-space:normal;font-family:var(--font)}
@@ -134,3 +126,55 @@ table.matrix td.no{color:var(--text-dim)}
 table.matrix td small,table.matrix th small{display:block;font-size:18px;font-weight:400;color:var(--text-dim)}
 table.matrix col.hl{background:var(--hl-fill);border:2px solid var(--hl)}
 table.matrix col.alt{background:var(--alt-fill);border:2px solid var(--alt)}
+
+/* 표 두 개 (slide-sheets): table·view를 이름 상자가 아니라 값이 든 표로 그린다.
+   column은 <col class="hl|alt">로 칠한다(칠한 곳 1곳으로 센다). view는 점선 테두리, 볼 때 계산하는 값은 td.f(ƒ) */
+.sheet{min-width:0}
+.sheet-name{display:flex;align-items:baseline;gap:12px;margin-bottom:8px;font-size:21px;color:var(--text-soft)}
+.sheet-name b{font-size:25px}
+.sheet-name .kind{padding:1px 10px;font-size:19px;font-weight:700;color:var(--text-strong);border:1px solid var(--line-strong);border-radius:999px}
+.sheet table{table-layout:fixed;width:100%;font-size:24px;font-variant-numeric:tabular-nums;border:2px solid var(--line-strong)}
+.sheet th,.sheet td{padding:7px 16px;border:1px solid var(--line);white-space:nowrap}
+.sheet th{font-family:var(--mono);font-size:19px;color:var(--text-strong);background:none;border-bottom:2px solid var(--line-strong)}
+.sheet col.hl{background:var(--hl-fill);border:2px solid var(--hl)}
+.sheet col.alt{background:var(--alt-fill);border:2px solid var(--alt)}
+.sheet.view table{border-style:dashed}
+.sheet td.f::before{content:"ƒ ";color:var(--alt-text);font-weight:700}
+.sheet tr.gone td{color:var(--text-dim);text-decoration:line-through}
+
+/* 위 표의 column이 아래 표의 같은 column으로 내려간다(.pass .go), 나머지는 막힌다(.pass .stop).
+   --c1은 이어지는 column 폭, --stack-w는 표 폭이다. 오른쪽 칸(.feed)은 표에 값을 넣는 쪽 */
+.scene-stack{display:grid;width:100%;grid-template-columns:var(--stack-w,860px) minmax(0,1fr);column-gap:14px;row-gap:0;align-items:end}
+.pass{display:grid;grid-template-columns:var(--c1,250px) minmax(0,1fr);height:80px}
+.pass .go{display:flex;align-items:center;gap:10px;padding:0 14px;background:var(--hl-fill);border-left:2px solid var(--hl);border-right:2px solid var(--hl);color:var(--hl-text);font-size:21px;font-weight:700;line-height:1.25}
+.pass .go i{font-style:normal;font-size:30px;line-height:1}
+.pass .stop{display:flex;align-items:flex-start;justify-content:center;margin:0 0 22px 0;padding-top:10px;border-top:8px solid var(--line-strong);font-size:21px;color:var(--text-soft);
+  background:repeating-linear-gradient(135deg,transparent 0 10px,var(--box) 10px 20px)}
+.feed{display:flex;align-items:center;gap:0;min-width:0;font-size:20px;line-height:1.35;align-self:center}
+.feed.up{margin-top:44px}.feed.down{margin-bottom:44px}
+.feed .arrow{flex:0 0 76px;height:4px;margin-left:16px;position:relative;background:currentColor;color:var(--text-dim)}
+.feed .arrow::before{content:"";position:absolute;left:-14px;top:-9px;border:11px solid transparent;border-left:0;border-right:16px solid currentColor}
+.feed .arrow.text-alt{color:var(--alt)}
+.feed .from{min-width:0;padding:10px 16px;background:var(--box);border:1px solid var(--line-strong);border-radius:10px}
+.feed .from b{display:block;font-size:21px}
+.feed .from small{font-size:18px;color:var(--text-soft)}
+.feed .from ul{list-style:none;margin:6px 0 0;font-size:19px}
+.feed .from li b{display:inline;font-size:19px}
+
+/* 주소(addr)와 담는 상자(nest, slide-nest): "안에 들어 있다"는 겹친 상자로 그린다. 옆으로 늘어놓지 않는다 */
+.addr{display:flex;justify-content:center;align-items:flex-start;gap:4px;font-family:var(--mono);font-size:34px;font-weight:700;color:var(--text-strong)}
+.addr span{display:flex;flex-direction:column;align-items:center}
+.addr span small{align-self:stretch;margin-top:6px;padding-top:5px;border-top:3px solid var(--line-strong);text-align:center;font-family:var(--font);font-size:21px;font-weight:700;color:var(--text-soft)}
+.addr span.hl-seg small{border-top-color:var(--hl);color:var(--hl-text)}
+.nest{width:100%;padding:14px 18px 18px;border:2px solid var(--line-strong);border-radius:16px;background:var(--panel)}
+.nest>h3,.nest .nest>h3{margin-bottom:12px;font-size:22px;font-weight:800;color:var(--text-strong)}
+.nest h3 small{margin-left:8px;font-size:19px;font-weight:400;color:var(--text-soft)}
+.nest .inside{display:grid;gap:16px;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);align-items:stretch}
+.nest .nest{padding:12px 14px 14px;border-width:1px;border-radius:12px;background:var(--box)}
+.nest .nest.hl{border-width:2px;background:var(--hl-fill)}
+.nest .nest.hl>h3{color:var(--hl-text)}
+.tbl{margin-top:10px;border:1px solid var(--line-strong);border-radius:6px;overflow:hidden;background:var(--bg)}
+.tbl b{display:block;padding:5px 10px;font-family:var(--mono);font-size:19px;background:var(--panel);border-bottom:1px solid var(--line-strong)}
+.tbl i{display:block;height:46px;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:100% 23px,25% 100%}
+.tbl.hl{border-width:2px}
+.tbl.hl b{background:var(--hl-fill);color:var(--hl-text);border-bottom-color:var(--hl)}

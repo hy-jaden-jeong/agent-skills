@@ -1,0 +1,33 @@
+<!-- 담는 상자 장표 (겹친 상자). 이 주석은 지워도 된다.
+  - "무엇 안에 무엇이 들어 있나"에 답할 때 쓴다(catalog ⊃ schema ⊃ table, 폴더 계층). 안에 든 것을 옆으로 늘어놓지 않고 겹친 상자로 그린다.
+  - 위 .addr는 실제 주소(점으로 이은 이름)를 단계별로 끊어 보인다. 지금 볼 단계는 <span class="hl-seg">.
+  - .nest 안의 .inside에 안쪽 .nest를 2~4개 둔다. 맨 안쪽 table은 .tbl(이름 + 빈 격자)로 그린다. 지금 볼 것만 .nest.hl과 .tbl.hl로 칠한다.
+  - 상자 이름 옆 <small>은 짧은 딱지(공백 빼고 24자 안)다. ①②③는 주소 단계와 상자에 같은 번호로 붙여 짝을 보인다.
+-->
+<h1>{{제목: 이 장표의 결론 한 문장}}</h1>
+<p class="subtitle">{{부제: 배우는 사람의 질문 · 무엇을 예로 들었는지}}</p>
+<div class="stage">
+<div class="diagram">
+ <div class="addr">
+  <span>{{바깥 이름}}<small>① {{단계}} · {{비슷한 것}}</small></span>.
+  <span class="hl-seg">{{가운데 이름}}<small>② {{단계}} · {{비슷한 것}}</small></span>.
+  <span class="hl-seg">{{안쪽 이름}}<small>③ {{단계}} · {{비슷한 것}}</small></span>
+ </div>
+ <div class="nest">
+  <h3>① {{바깥 이름}} <small>{{짧은 딱지}}</small></h3>
+  <div class="inside">
+   <div class="nest"><h3>{{가운데 이름}} <small>{{짧은 딱지}}</small></h3>
+    <div class="tbl"><b>{{안쪽 이름}}</b><i></i></div></div>
+   <div class="nest hl"><h3>② {{가운데 이름}} <small>{{짧은 딱지}}</small></h3>
+    <div class="tbl hl"><b>③ {{안쪽 이름}}</b><i></i></div>
+    <div class="tbl"><b>{{안쪽 이름}}</b><i></i></div></div>
+   <div class="nest"><h3>{{가운데 이름}} <small>{{짧은 딱지}}</small></h3>
+    <div class="tbl"><b>{{안쪽 이름}}</b><i></i></div></div>
+  </div>
+ </div>
+</div>
+<div class="panel">
+<p class="key">{{그래서: 그림을 보고 가져갈 한두 문장. 공백 빼고 90자까지}}</p>
+</div>
+</div>
+<p class="source"><b>근거</b> {{코드 위치(path:line)·문서. 없으면 이 줄을 지운다}}</p>

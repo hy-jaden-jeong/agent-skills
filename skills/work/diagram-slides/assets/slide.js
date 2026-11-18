@@ -8,6 +8,8 @@
   const ACCENTS = ['hl', 'alt', 'bad'];  // slide.css의 강조 색
   const MAX_ACCENT_KINDS = 2;  // 한 장에 쓰는 강조 색 가짓수
   const MAX_ACCENTED = 4;      // 한 장에 칠하는 곳 수. 대응 장표가 짝 둘 × 위아래로 4곳을 쓴다
+  const MAX_LABEL = 24;        // 그림 안 글 한 덩어리 글자 수(코드 이름·공백 빼고). 넘으면 문장이다
+  const MAX_CAPTION = 90;      // 아래 "그래서" 글 글자 수(공백 빼고)
   // SKILL.md "모양 고르기" 표에 올린 Mermaid 종류. 나머지는 색·글자 크기를 맞추지 않았다
   const MERMAID_KINDS = { flowchart: 'flowchart', graph: 'flowchart', sequenceDiagram: 'sequence', timeline: 'timeline', 'stateDiagram-v2': 'state' };
   const report = { failure: '', problems: [] };
@@ -405,7 +407,7 @@
         const a = r.strips.map(accentOf).find(Boolean), nw = textWidth(r.note, 18);  // 메모는 그 줄에서 칠한 색을 따른다
         el('text', { x: gutter, y: y + 22, style: `font-size:18px;fill:${color(a ? `--${a}-text` : '--text-dim')}` }, svg).textContent = r.note;
         right = Math.max(right, gutter + nw); y += 30;
-        if (gutter + nw > W) report.problems.push(`cells 메모 "${r.note.slice(0, 12)}…"가 그림 폭을 넘는다. 줄이거나 읽는 법으로 옮긴다.`);
+        if (gutter + nw > W) report.problems.push(`cells 메모 "${r.note.slice(0, 12)}…"가 그림 폭을 넘는다. 줄이거나 ①만 두고 설명은 아래 글로 옮긴다.`);
       }
       y += S.h * 0.7;
     }
@@ -468,7 +470,7 @@
     let S, width, height;
 
     if (pre.dataset.layout === 'right') {  // 파일 시스템처럼: 한 줄에 node 하나, 깊이만큼 오른쪽으로
-      if (levelNames.length) report.problems.push('tree의 "levels:" 줄은 아래로 펴는 배치에서만 그린다. data-layout="right"에서는 지우고, 층 뜻은 읽는 법에 쓴다.');
+      if (levelNames.length) report.problems.push('tree의 "levels:" 줄은 아래로 펴는 배치에서만 그린다. data-layout="right"에서는 지우고, 층 뜻은 node 옆 딱지나 아래 글에 쓴다.');
       if (all.length > 12) report.problems.push(`tree node가 ${all.length}개다. 오른쪽으로 펴는 배치는 12개까지다. 가지를 "… 외 N개"로 줄이거나 장표를 나눈다.`);
       for (S of SIZES.slice(1)) {
         const row = S.h + 8, ind = 44;
@@ -541,7 +543,7 @@
       if (!n.kids.length) spots.push({ x: n.x + n.w / 2 - w / 2, y: n.y + n.h + 8, w, h: 24, below: true });  // leaf 아래에는 edge가 없다
       const spot = spots.find(s => s.x >= lo && s.x + s.w <= hi && !taken.some(t => t.x !== n.x && overlaps(s, t) || t.x === n.x && t.y !== n.y && overlaps(s, t))
         && !(s.below && bands.some(b => overlaps(s, b, 0))));
-      if (!spot) { report.problems.push(`tree 메모 "${n.note.slice(0, 14)}…"를 둘 자리가 없다(양옆이 다른 node나 그림 끝에 닿는다). 메모를 줄이거나 번호(①)만 두고 글은 읽는 법으로 옮긴다.`); continue; }
+      if (!spot) { report.problems.push(`tree 메모 "${n.note.slice(0, 14)}…"를 둘 자리가 없다(양옆이 다른 node나 그림 끝에 닿는다). 메모를 줄이거나 번호(①)만 두고 글은 아래 글로 옮긴다.`); continue; }
       taken.push(spot); minX = Math.min(minX, spot.x); maxX = Math.max(maxX, spot.x + spot.w);
       if (spot.below) extra = 34;
       el('text', { x: spot.x, y: spot.y + 12, 'dominant-baseline': 'central', style: `font-size:18px;font-weight:600;fill:${color(a ? `--${a}-text` : '--text-dim')}` }, svg).textContent = n.note;
@@ -556,7 +558,7 @@
     });
     const bottom = depthMax * (rowH + levelGap) + rowH + extra;
     if (bottom > H + 0.5 && !(height > H + 0.5))  // 크기 고르기 때는 leaf 아래 메모 높이를 몰랐다
-      report.problems.push(`tree가 그림 영역을 넘는다(leaf 아래 메모까지 ${Math.round(bottom)}px > ${H}px). 메모를 줄이거나 ①만 두고 글은 읽는 법으로 옮기거나 장표를 나눈다.`);
+      report.problems.push(`tree가 그림 영역을 넘는다(leaf 아래 메모까지 ${Math.round(bottom)}px > ${H}px). 메모를 줄이거나 ①만 두고 글은 아래 글로 옮기거나 장표를 나눈다.`);
     setSvgBox(svg, minX - 2, -2, maxX - minX + 4, bottom + 4);
     pre.replaceChildren(svg);
   }
@@ -757,9 +759,31 @@
     if (stray.length)
       report.problems.push(`장표 밖에 떠 있는 글이 있다("${stray[0].textContent.trim().slice(0, 30)}…"). 주석 안에 '-->'를 쓰면 주석이 거기서 끝난다. 주석을 고친다.`);
 
-    // 장표 구조: 그림만 있는 장표는 쓰지 않는다
-    for (const [sel, what] of [['body>h1', '제목(h1)이'], ['.diagram', '그림 영역(.diagram)이'], ['.panel', '설명 패널(.panel)이'], ['.panel .key', '핵심 문장(.key)이']])
+    // 장표 구조: 제목(결론) · 그림 · 아래 "그래서" 한두 문장
+    for (const [sel, what] of [['body>h1', '제목(h1)이'], ['.diagram', '그림 영역(.diagram)이'], ['.panel', '아래 글 칸(.panel)이'], ['.panel .key', '"그래서" 문장(.panel .key)이']])
       if (!one(sel)) report.problems.push(`${what} 없다. 견본의 구조를 그대로 쓴다.`);
+
+    // 장면 장표: 설명은 그림이 한다. 아래 글은 결론 한두 문장이고, 읽는 법·용어 칸은 없다
+    if (document.querySelector('.panel h3, .panel ul, .panel ol, .panel .next'))
+      report.problems.push('설명 패널(핵심·용어·읽는 법·이어지는 것)은 더 쓰지 않는다. 아래 글은 .key 한두 문장만 두고, 붙일 말은 ①②③ 딱지로 그림의 그 자리에 쓴다. 새 용어는 그 사물 옆에 짧게 쓴다.');
+    {
+      const cap = (one('.panel') || { textContent: '' }).textContent.replace(/\s+/g, '').length;
+      if (cap > MAX_CAPTION) report.problems.push(`아래 글이 ${cap}자다(공백 빼고 ${MAX_CAPTION}자까지). 결론 한두 문장만 남기고, 설명은 그림으로 옮긴다.`);
+    }
+    // 그림 안 문장: 그림 안 글 한 덩어리는 이름·값·짧은 딱지까지다. 문장으로 설명하던 것을 모양으로 그린다
+    {
+      const long = [];
+      for (const e of document.querySelectorAll('.diagram *')) {
+        if (/^(style|script|pre)$/i.test(e.tagName)) continue;
+        const own = [...e.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join('')
+          .replace(/[A-Za-z_`][\w.`-]*/g, '').replace(/\{\{[^}]*\}\}/g, '').replace(/\s+/g, '');  // 코드 이름(영문 식별자)과 견본 자리는 세지 않는다
+        if (own.length > MAX_LABEL) long.push(own);
+      }
+      if (long.length) {
+        const worst = long.sort((a, b) => b.length - a.length)[0];
+        report.problems.push(`그림 안에 문장이 ${long.length}곳 있다(가장 긴 곳 "${worst.slice(0, 18)}…" ${worst.length}자, 코드 이름·공백 빼고 ${MAX_LABEL}자까지). 그림 안 글은 이름·값·짧은 딱지만 쓴다. 문장으로 설명하던 것을 모양(값이 든 표, 겹친 상자, 이어진 column, 막힌 길)으로 그린다.`);
+      }
+    }
 
     // 넘침: 글자를 줄이지 않고 글을 줄이거나 장표를 나눈다
     await new Promise(r => setTimeout(r, 50));
@@ -768,7 +792,7 @@
       ['body>h1', '제목이', '한 줄에 들어가게 줄인다'],
       ['body>.subtitle', '부제가', '한 줄에 들어가게 줄인다'],
       ['.diagram', '그림 영역이', '상자나 표의 줄을 줄이거나 장표를 나눈다'],
-      ['.panel', '설명 패널이', '용어·읽는 법 문장을 줄이거나 장표를 나눈다'],
+      ['.panel', '아래 글이', '결론 한두 문장으로 줄인다'],
       ['.source', '근거 줄이', '두 줄 안으로 줄인다'],
     ]) {
       const e = one(sel);
