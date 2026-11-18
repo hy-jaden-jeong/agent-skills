@@ -118,6 +118,10 @@ model 이름은 vendor가 자주 바꾼다. 바꿀 때는 `agents/roles/<역할>
 
 `main`에는 직접 push할 수 없다. 브랜치에서 고치고 PR을 열어 merge한다. agent가 지킬 규칙은 [AGENTS.md](AGENTS.md)에 있다. Claude Code는 `CLAUDE.md`가 `AGENTS.md`를 불러와 같은 규칙을 읽는다.
 
+## 라이선스
+
+[MIT](LICENSE). 출처(저작권 표시와 라이선스 문구)만 남기면 자유롭게 쓰고 고치고 배포해도 된다.
+
 ## 참고한 것
 
 `grill-me`와 `build-to-spec`은 두 공개 skill 모음에서 생각을 빌렸다. 글은 새로 썼다.
