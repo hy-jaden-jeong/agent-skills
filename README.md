@@ -1,20 +1,29 @@
 # agent-skills
 
-일할 때 쓰는 개인 skill 모음. [Agent Skills](https://agentskills.io) 형식(`SKILL.md`)이라 특정 vendor에 묶이지 않는다. Claude Code와 Codex(GPT)에서 같은 파일을 그대로 쓴다.
+일할 때와 투자할 때 쓰는 개인 skill 모음. [Agent Skills](https://agentskills.io) 형식(`SKILL.md`)이라 특정 vendor에 묶이지 않는다. Claude Code와 Codex(GPT)에서 같은 파일을 그대로 쓴다.
 
-- skill 본문은 model 이름 대신 역할(작업 모델, 판단 모델, 싼 모델)로 말한다. 역할마다 Claude Code와 Codex에서 쓸 이름은 [debate-with-top-model](skills/debate-with-top-model/SKILL.md)의 "역할" 표에 있다.
+- skill은 쓰임새별 묶음 폴더에 있다. `skills/work/`는 일할 때, `skills/invest/`는 투자할 때 쓴다. 설치할 때 필요한 묶음만 고른다.
+- skill 본문은 model 이름 대신 역할(작업 모델, 판단 모델, 싼 모델)로 말한다. 역할마다 Claude Code와 Codex에서 쓸 이름은 [debate-with-top-model](skills/work/debate-with-top-model/SKILL.md)의 "역할" 표에 있다.
 - agent마다 다른 도구(선택 화면, subagent, 미리보기)는 "있으면 쓰고, 없으면 이렇게"로 쓴다.
 - subagent 정의는 역할 하나에 원본 한 벌(`agents/roles/`)을 두고, agent별 파일을 만들어 둔다(`agents/claude/`, `agents/codex/`).
 
 ## skill 목록
 
+### work (일할 때)
+
 | skill | 하는 일 |
 | --- | --- |
-| [diagram-slides](skills/diagram-slides/SKILL.md) | 설명을 16:9 다크 모드 장표(PNG)로 굽는다. 그림 하나와 설명 패널(핵심·용어·읽는 법)을 담고, 내용에 맞는 모양(흐름, 묶음, 대응, 주고받기, 사건 순서, 시간 막대, 양의 흐름)을 골라 그린다 |
-| [teach-me](skills/teach-me/SKILL.md) | 문서·레포·시스템을 단계별 장표·퀴즈로 가르친다. 그림은 `diagram-slides`에 맡긴다 |
-| [grill-me](skills/grill-me/SKILL.md) | 계획·결정·아이디어를 끝까지 인터뷰한다. 정할 것을 모두 찾아 추천과 함께 묻고, 필요한 만큼 가르치고, 결정 목록을 확정받는다. 코드가 없는 주제는 파일 없이 끝내고, 만들 일이면 문제 맞추기 → 설계 → 인터뷰 → 확정으로 spec 한 파일을 확정한다 |
-| [build-to-spec](skills/build-to-spec/SKILL.md) | 확정된 spec대로 만들고 증명한다. slice 나누기 → 구현(실패하는 test 먼저, 기존 출력은 golden master로 지킴) → 세 방향 검증. spec 파일이 진행 상태라 끊긴 구현을 이어 간다 |
-| [debate-with-top-model](skills/debate-with-top-model/SKILL.md) | 메인은 작업 모델로 두고, 설계·접근법을 찾을 문제·되돌리기 비싼 결정·두 번 실패한 문제에서만 가장 강한 판단 모델(Claude는 Fable, GPT는 Astra)과 각자 안을 내고 견줘 결론 하나를 들고 온다 |
+| [diagram-slides](skills/work/diagram-slides/SKILL.md) | 설명을 16:9 다크 모드 장표(PNG)로 굽는다. 그림 하나와 설명 패널(핵심·용어·읽는 법)을 담고, 내용에 맞는 모양(흐름, 묶음, 대응, 주고받기, 사건 순서, 시간 막대, 양의 흐름)을 골라 그린다 |
+| [teach-me](skills/work/teach-me/SKILL.md) | 문서·레포·시스템을 단계별 장표·퀴즈로 가르친다. 그림은 `diagram-slides`에 맡긴다 |
+| [grill-me](skills/work/grill-me/SKILL.md) | 계획·결정·아이디어를 끝까지 인터뷰한다. 정할 것을 모두 찾아 추천과 함께 묻고, 필요한 만큼 가르치고, 결정 목록을 확정받는다. 코드가 없는 주제는 파일 없이 끝내고, 만들 일이면 문제 맞추기 → 설계 → 인터뷰 → 확정으로 spec 한 파일을 확정한다 |
+| [build-to-spec](skills/work/build-to-spec/SKILL.md) | 확정된 spec대로 만들고 증명한다. slice 나누기 → 구현(실패하는 test 먼저, 기존 출력은 golden master로 지킴) → 세 방향 검증. spec 파일이 진행 상태라 끊긴 구현을 이어 간다 |
+| [debate-with-top-model](skills/work/debate-with-top-model/SKILL.md) | 메인은 작업 모델로 두고, 설계·접근법을 찾을 문제·되돌리기 비싼 결정·두 번 실패한 문제에서만 가장 강한 판단 모델(Claude는 Fable, GPT는 Astra)과 각자 안을 내고 견줘 결론 하나를 들고 온다 |
+
+### invest (투자할 때)
+
+아직 없다. 넣을 때 지킬 것은 [skills/invest/README.md](skills/invest/README.md)에 있다.
+
+### 함께 설치할 것
 
 함께 설치할 것이 있다. skill은 다른 skill을 같은 skills 폴더에서 찾는다.
 
@@ -27,7 +36,11 @@
 
 skill 폴더를 agent의 skills 폴더 아래에 symbolic link로 건다. 레포를 `git pull` 하면 바로 반영된다.
 
+묶음 폴더는 레포 안에서만 쓰는 분류다. agent는 skills 폴더 바로 아래 한 단계만 읽으므로, 설치하면 고른 묶음의 skill이 이름 그대로 한 폴더에 모인다. 아래 명령의 `{work,invest}`에서 필요 없는 묶음은 뺀다.
+
 이름이 바뀌거나 없어진 skill이 있다. 예전에 설치했으면 옛 link를 지우고 아래 설치를 다시 돌린다.
+
+- skill 폴더가 `skills/<이름>/`에서 `skills/work/<이름>/`으로 옮겨졌다. 예전 link는 끊기지만, 아래 설치를 다시 돌리면 같은 이름으로 다시 걸린다.
 
 - `spec-driven` → `build-to-spec`(spec 확정은 `grill-me`로 옮김)
 - `debate-with-fable` → `debate-with-top-model`
@@ -53,13 +66,13 @@ git clone https://github.com/hy-jaden-jeong/agent-skills.git ~/agent-skills
 Claude Code:
 
 ```bash
-mkdir -p ~/.claude/skills && for s in ~/agent-skills/skills/*/; do ln -sfn "${s%/}" ~/.claude/skills/"$(basename "$s")"; done
+mkdir -p ~/.claude/skills && find ~/agent-skills/skills/{work,invest} -mindepth 1 -maxdepth 1 -type d -exec sh -c 'ln -sfn "$1" "$HOME/.claude/skills/$(basename "$1")"' _ {} \;
 ```
 
 Codex:
 
 ```bash
-mkdir -p ~/.agents/skills && for s in ~/agent-skills/skills/*/; do ln -sfn "${s%/}" ~/.agents/skills/"$(basename "$s")"; done
+mkdir -p ~/.agents/skills && find ~/agent-skills/skills/{work,invest} -mindepth 1 -maxdepth 1 -type d -exec sh -c 'ln -sfn "$1" "$HOME/.agents/skills/$(basename "$1")"' _ {} \;
 ```
 
 ### subagent 정의
@@ -98,12 +111,12 @@ model 이름은 vendor가 자주 바꾼다. 바꿀 때는 `agents/roles/<역할>
 - 장표 설치 확인
 
   ```bash
-  python3 ~/agent-skills/skills/diagram-slides/scripts/render_slide.py --check
+  python3 ~/agent-skills/skills/work/diagram-slides/scripts/render_slide.py --check
   ```
 
 ## 이 레포를 고칠 때
 
-agent가 지킬 규칙은 [AGENTS.md](AGENTS.md)에 있다. Claude Code는 `CLAUDE.md`가 `AGENTS.md`를 불러와 같은 규칙을 읽는다.
+`main`에는 직접 push할 수 없다. 브랜치에서 고치고 PR을 열어 merge한다. agent가 지킬 규칙은 [AGENTS.md](AGENTS.md)에 있다. Claude Code는 `CLAUDE.md`가 `AGENTS.md`를 불러와 같은 규칙을 읽는다.
 
 ## 참고한 것
 
