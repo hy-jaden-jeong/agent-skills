@@ -1,5 +1,5 @@
 // 장표 마무리 스크립트. render_slide.py가 굽는 순간에 장표 끝에 넣는다.
-// 하는 일: (1) Mermaid를 slide.css 색으로 그린다 (2) 값 그림(sankey·timebar·cells·tree·quadrant)을 SVG로 그린다
+// 하는 일: (1) Mermaid를 slide.css 색으로 그린다 (2) 값 그림(sankey·timebar·cells·tree·quadrant·line·bar)을 SVG로 그린다
 //          (3) 그림을 영역에 맞춘다 (4) 규칙을 어긴 곳을 찾는다.
 // 결과는 document.title에 'SLIDE-REPORT:<JSON>'으로 남기고 render_slide.py가 읽는다.
 (async () => {
@@ -620,6 +620,228 @@
     pre.replaceChildren(svg);
   }
 
+  // ── line·bar 공통: 숫자 읽기, 보기 좋은 눈금 간격 ──
+  const chartNumber = (s, where) => {
+    const t = s.replace(/[_\s]/g, '');
+    if (!/^-?\d+(\.\d+)?$/.test(t)) throw new Error(`${where}: "${s}"는 숫자가 아니다. 천 단위는 1200이나 1_200으로 쓴다(쉼표는 칸을 나눈다).`);
+    return +t;
+  };
+  const niceStep = (range, count) => {
+    const raw = range / count || 1, p = 10 ** Math.floor(Math.log10(raw));
+    return [1, 2, 2.5, 5, 10].map(k => k * p).find(s => s >= raw);
+  };
+  const valueText = (v, unit) => `${fmt(+v.toFixed(6))}${unit}`;
+
+  // ── line: "x: 칸 이름들", "계열 이름: 값들[, hl]" 줄로 값이 시간에 따라 바뀌는 모습을 그린다 ──
+  function drawLine(pre) {
+    const unit = pre.dataset.unit || '';
+    let xs = null;
+    const series = [], marks = [], refs = [];
+    for (const { s: line, no } of valueLines(pre)) {
+      const s = line.trim(), where = `line ${no}번째 줄(${s})`;
+      let m;
+      if ((m = s.match(/^x\s*:\s*(.+)$/))) { xs = m[1].split(',').map(x => x.trim()); if (xs.some(x => !x)) throw new Error(`${where}: 빈 칸 이름이 있다.`); continue; }
+      if (s.startsWith('|')) { const [at, ...label] = s.slice(1).split(',').map(x => x.trim()); marks.push({ at, label: label.join(', '), where }); continue; }
+      if (s.startsWith('=')) { const [v, ...label] = s.slice(1).split(',').map(x => x.trim()); refs.push({ v: chartNumber(v, where), label: label.join(', ') }); continue; }
+      if (!(m = s.match(/^(.+?)\s*:\s*(.+)$/)))
+        throw new Error(`${where}: 줄은 "x: 1월, 2월, …", "계열 이름: 값, 값, …[, hl]", "| 칸 이름, 사건", "= 값, 기준 이름" 중 하나다.`);
+      const f = m[2].split(',').map(x => x.trim());
+      const accent = ACCENTS.includes(f[f.length - 1]) ? f.pop() : '';
+      const points = f.map(v => { const star = v.endsWith('*'); return { v: chartNumber(star ? v.slice(0, -1) : v, where), star }; });
+      series.push({ name: m[1], points, accent, where });
+    }
+    if (!xs) throw new Error('line에 "x: 1월, 2월, …" 줄(가로축 칸 이름)이 없다.');
+    if (xs.length < 2) throw new Error('line 가로축 칸이 2개보다 적다. 값이 하나면 line이 아니라 bar를 쓴다.');
+    if (!series.length) throw new Error('line에 계열(“이름: 값, 값, …”) 줄이 없다.');
+    for (const sr of series) if (sr.points.length !== xs.length)
+      throw new Error(`${sr.where}: 값이 ${sr.points.length}개인데 가로축 칸은 ${xs.length}개다. 개수를 맞춘다.`);
+    for (const mk of marks) { mk.i = xs.indexOf(mk.at); if (mk.i < 0) throw new Error(`${mk.where}: "${mk.at}"는 x 줄에 없는 칸 이름이다.`); }
+    if (series.length > 4) report.problems.push(`line 계열이 ${series.length}개다. 4개까지다. 볼 계열만 남기거나 장표를 나눈다.`);
+    if (xs.length > 24) report.problems.push(`line 가로축 칸이 ${xs.length}개다. 24개까지다. 주·월 단위로 묶는다.`);
+
+    const all = series.flatMap(sr => sr.points.map(p => p.v)).concat(refs.map(r => r.v));
+    const minAttr = pre.dataset.min;
+    // 세로축은 늘 0을 품는다. 값이 모두 음수면 0이 위끝이다. data-min은 값이 모두 0 이상일 때 바닥을 올리는 데만 쓴다
+    let lo = minAttr !== undefined ? chartNumber(minAttr, 'line data-min') : Math.min(0, ...all), hi = Math.max(0, ...all);
+    if (minAttr !== undefined && lo < 0) throw new Error(`line data-min(${lo})은 0 이상이다. 음수 값이 있으면 data-min을 지운다(세로축이 0과 음수를 함께 그린다).`);
+    if (lo > Math.min(...all)) throw new Error(`line data-min(${lo})이 가장 작은 값(${Math.min(...all)})보다 크다.`);
+    if (hi === lo) hi = lo + 1;
+    const step = niceStep(hi - lo, 5);
+    lo = Math.floor(lo / step + 1e-9) * step; hi = Math.ceil(hi / step - 1e-9) * step;
+    const ticks = [];
+    for (let t = lo; t <= hi + step / 1e6; t += step) ticks.push(t);
+
+    const W = pre.clientWidth, H = pre.clientHeight, FONT = 20, TICK = 18;
+    const solo = series.length === 1 && !series[0].accent;  // 계열 하나를 칠하지 않으면 조금 밝게 그린다
+    const endLabel = sr => ({ name: sr.name, value: valueText(sr.points[sr.points.length - 1].v, unit) });
+    const endWidth = sr => { const l = endLabel(sr); return textWidth(l.name, FONT, 600) + 8 + textWidth(l.value, FONT); };
+    const tickW = Math.max(...ticks.map(t => textWidth(valueText(t, unit), TICK)));
+    const left = Math.max(tickW + 14, textWidth(xs[0], TICK) / 2 + 4);
+    const right = Math.max(...series.map(endWidth)) + 22;
+    if (right > W * 0.35) report.problems.push('line 끝 라벨(계열 이름 + 마지막 값)이 그림 폭의 35%를 넘는다. 계열 이름을 줄인다.');
+    const top = marks.length ? 44 : 22, bottom = 40, plotH = H - top - bottom;
+    if (plotH < 200) report.problems.push(`line 그림 높이가 모자란다(${Math.round(plotH)}px). 장표의 다른 글을 줄이거나 장표를 나눈다.`);
+    const x0 = left, x1 = W - right;
+    const X = i => x0 + i * (x1 - x0) / (xs.length - 1);
+    const Y = v => top + (hi - v) / (hi - lo) * plotH;
+    if (plotH / (ticks.length - 1) < TICK + 8) report.problems.push('line 세로 눈금 글자가 서로 겹친다. 그림 높이를 늘리거나 값 범위를 줄인다.');
+
+    const svg = el('svg', { width: W, height: H, viewBox: `0 0 ${W} ${H}`, class: 'chart' });
+    for (const t of ticks) {
+      const zero = Math.abs(t) < step / 1e6;  // 0 눈금(없으면 바닥)을 진하게 긋는다
+      const base = zero || (lo > 0 && t === lo);
+      el('line', { x1: x0, x2: x1, y1: Y(t), y2: Y(t), style: `stroke:${color(base ? '--line-strong' : '--line')};stroke-width:${base ? 1.5 : 1}` }, svg);
+      el('text', { x: x0 - 12, y: Y(t), 'text-anchor': 'end', 'dominant-baseline': 'central', style: `font-size:${TICK}px;fill:${color('--text-dim')}` }, svg).textContent = valueText(t, unit);
+    }
+    // 가로축 칸 이름: 겹치면 몇 칸씩 건너뛰어 적는다. 마지막 칸은 늘 적는다
+    const xw = Math.max(...xs.map(x => textWidth(x, TICK))), gap = (x1 - x0) / (xs.length - 1);
+    const every = Math.max(1, Math.ceil((xw + 14) / gap));
+    const shown = xs.map((_, i) => i).filter(i => i % every === 0 || i === xs.length - 1)
+      .filter((i, k, a) => !(k === a.length - 2 && a[k + 1] === xs.length - 1 && (xs.length - 1 - i) * gap < xw + 14));
+    // 겹침 검사: 값 글자·끝 라벨·점선 이름은 taken(이미 놓인 글자·점선)과 그림 밖을 피한다
+    const taken = [];
+    const box = (x, y, w, anchor, name) => ({ x: anchor === 'middle' ? x - w / 2 : anchor === 'end' ? x - w : x, y: y - 12, w, h: 24, name });
+    const inside = b => b.x >= 0 && b.y >= 0 && b.x + b.w <= W && b.y + b.h <= H;
+    const xRow = top + plotH + 24;  // 가로축 칸 이름 줄의 가운데
+    for (const i of shown) {
+      el('text', { x: X(i), y: xRow, 'text-anchor': 'middle', 'dominant-baseline': 'central', style: `font-size:${TICK}px;fill:${color('--text-dim')}` }, svg).textContent = xs[i];
+      taken.push(box(X(i), xRow, textWidth(xs[i], TICK), 'middle', `가로축 칸 이름 ${xs[i]}`));
+    }
+    for (const t of ticks) taken.push(box(x0 - 12, Y(t), textWidth(valueText(t, unit), TICK), 'end', `세로축 눈금 ${valueText(t, unit)}`));
+    const halo = `paint-order:stroke;stroke:${color('--bg')};stroke-width:6px;stroke-linejoin:round`;  // 바탕색 테두리로 선·눈금을 가린다
+    for (const r of refs) {
+      el('line', { x1: x0, x2: x1, y1: Y(r.v), y2: Y(r.v), style: `stroke:${color('--text-soft')};stroke-width:2;stroke-dasharray:6 5` }, svg);
+      const s = r.label ? `${r.label} ${valueText(r.v, unit)}` : valueText(r.v, unit), w = textWidth(s, TICK, 600);
+      const b = [-14, 14].map(d => box(x0 + 8, Y(r.v) + d, w, 'start', s)).find(c => inside(c) && !taken.some(t => overlaps(c, t, 4)));
+      if (!b) { report.problems.push(`line 기준 이름 "${s}"을 둘 자리가 없다. 기준을 줄이거나 이름을 줄인다.`); continue; }
+      el('text', { x: x0 + 8, y: b.y + 12, 'text-anchor': 'start', 'dominant-baseline': 'central', style: `font-size:${TICK}px;font-weight:600;fill:${color('--text-soft')};${halo}` }, svg).textContent = s;
+      taken.push(b);
+      taken.push({ x: x0, y: Y(r.v) - 2, w: x1 - x0, h: 4, name: `${s} 점선` });
+    }
+    for (const mk of marks) {
+      const x = X(mk.i), s = mk.label || mk.at, w = textWidth(s, TICK, 600);
+      el('line', { x1: x, x2: x, y1: top - 8, y2: top + plotH, style: `stroke:${color('--text-soft')};stroke-width:2;stroke-dasharray:6 5` }, svg);
+      const anchor = x - w / 2 < 0 ? 'start' : x + w / 2 > W ? 'end' : 'middle';
+      el('text', { x, y: top - 22, 'text-anchor': anchor, 'dominant-baseline': 'central', style: `font-size:${TICK}px;font-weight:600;fill:${color('--text-soft')}` }, svg).textContent = s;
+      const b = box(x, top - 22, w, anchor, s), clash = taken.find(t => overlaps(b, t, 4));
+      if (clash) report.problems.push(`line 사건 이름 "${s}"이 "${clash.name}"과 겹친다. 사건 이름을 줄이거나 사건을 줄인다.`);
+      taken.push(b, { x: x - 2, y: top - 8, w: 4, h: plotH + 8, name: `${s} 점선` });
+    }
+
+    // 계열: 회색 먼저, 칠한 계열은 위에 그린다
+    const dots = xs.length <= 12;
+    for (const sr of [...series].sort((a, b) => !!a.accent - !!b.accent)) {
+      const g = el('g', sr.accent ? { class: sr.accent } : {}, svg);
+      const stroke = sr.accent ? color(`--${sr.accent}`) : color(solo ? '--text-soft' : '--text-dim');
+      el('path', { d: sr.points.map((p, i) => `${i ? 'L' : 'M'}${X(i)},${Y(p.v)}`).join(' '),
+        style: `fill:none;stroke:${stroke};stroke-width:${sr.accent || solo ? 4 : 2.5};stroke-linejoin:round;stroke-linecap:round` }, g);
+      sr.points.forEach((p, i) => {
+        if (dots || p.star || i === sr.points.length - 1)
+          el('circle', { cx: X(i), cy: Y(p.v), r: sr.accent || solo ? 6 : 4.5, style: `fill:${stroke};stroke:${color('--bg')};stroke-width:2` }, g);
+      });
+    }
+    // 끝 라벨: 계열 이름과 마지막 값. 세로로 겹치면 위아래로 민다
+    const ends = series.map(sr => ({ sr, y: Y(sr.points[sr.points.length - 1].v) })).sort((a, b) => a.y - b.y);
+    const minGap = FONT + 6;
+    for (let i = 1; i < ends.length; i++) ends[i].y = Math.max(ends[i].y, ends[i - 1].y + minGap);
+    const lastHalf = textWidth(xs[xs.length - 1], TICK) / 2;
+    const floor = lastHalf > 10 ? xRow - 12 - 4 - 12 : top + plotH + 10;  // 마지막 칸 이름이 끝 라벨 자리까지 오면 그 위에서 멈춘다
+    const over = ends.length ? ends[ends.length - 1].y - floor : 0;
+    if (over > 0) for (const e of ends) e.y -= over;
+    for (let i = ends.length - 2; i >= 0; i--) ends[i].y = Math.min(ends[i].y, ends[i + 1].y - minGap);
+    if (ends.length && ends[0].y < 10) report.problems.push('line 끝 라벨이 서로 겹쳐 둘 곳이 없다. 계열을 줄이거나 장표를 나눈다.');
+    for (const { sr, y } of ends) {
+      const { name, value } = endLabel(sr), x = X(xs.length - 1) + 14;
+      const t = el('text', { x, y, 'dominant-baseline': 'central', style: `font-size:${FONT}px` }, svg);
+      el('tspan', { style: `font-weight:600;fill:${color(sr.accent ? `--${sr.accent}-text` : '--text')}` }, t).textContent = name + ' ';
+      el('tspan', { style: `fill:${color('--text-soft')}` }, t).textContent = value;
+      const b = box(x, y, endWidth(sr), 'start', `${name} ${value}`), clash = taken.find(t => overlaps(b, t, 2));
+      if (clash) report.problems.push(`line 끝 라벨 "${name} ${value}"이 "${clash.name}"과 겹친다. 마지막 칸 이름이나 계열 이름을 줄이거나 사건을 옮긴다.`);
+      if (!inside(b)) report.problems.push(`line 끝 라벨 "${name} ${value}"이 그림 밖으로 나간다. 계열 이름을 줄인다.`);
+      taken.push(b);
+    }
+    // 값을 적을 점(값 끝의 *): 골짜기면 점 아래부터, 아니면 위부터 자리를 찾는다. 기준·사건 점선과 다른 글자를 피한다
+    for (const sr of series) sr.points.forEach((p, i, ps) => {
+      if (!p.star || i === ps.length - 1) return;
+      const nb = [ps[i - 1], ps[i + 1]].filter(Boolean).map(q => q.v), valley = nb.length && nb.every(v => v > p.v);
+      const s = valueText(p.v, unit), w = textWidth(s, FONT, 700);
+      // 자리 후보: 점 위·아래 가운데, 그다음 점 오른쪽으로 붙인 위·아래(첫 칸처럼 왼쪽이 막혔을 때)
+      const spots = (valley ? [26, -26] : [-26, 26]).flatMap(d => [['middle', X(i)], ['start', X(i) + 4]].map(([anchor, x]) => Object.assign(box(x, Y(p.v) + d, w, anchor, s), { anchor, tx: x })));
+      const b = spots.find(c => inside(c) && !taken.some(t => overlaps(c, t, 4)));
+      if (!b) {
+        const clash = taken.find(t => overlaps(spots[0], t, 4));
+        report.problems.push(`line 값 "${s}"(${sr.name}, ${xs[i]})이 ${clash ? `"${clash.name}"과 겹친다` : '그림 밖으로 나간다'}. * 를 다른 점으로 옮기거나 빼거나 장표를 나눈다.`);
+        return;
+      }
+      el('text', { x: b.tx, y: b.y + 12, 'text-anchor': b.anchor, 'dominant-baseline': 'central',
+        style: `font-size:${FONT}px;font-weight:700;fill:${color(sr.accent ? `--${sr.accent}-text` : '--text')};${halo}` }, svg).textContent = s;
+      taken.push(b);
+    });
+    pre.replaceChildren(svg);
+  }
+
+  // ── bar: "이름, 값[, hl|alt|bad]" 줄로 항목끼리 크기를 가로 막대로 견준다 ──
+  function drawBar(pre) {
+    const unit = pre.dataset.unit || '';
+    const bars = [], refs = [];
+    for (const { s: line, no } of valueLines(pre)) {
+      const s = line.trim(), where = `bar ${no}번째 줄(${s})`;
+      if (s.startsWith('|')) { const [v, ...label] = s.slice(1).split(',').map(x => x.trim()); refs.push({ v: chartNumber(v, where), label: label.join(', '), where }); continue; }
+      const f = s.split(',').map(x => x.trim());
+      if (f.length < 2 || f.length > 3) throw new Error(`${where}: "이름, 값" 또는 끝에 ", hl"을 더한 모양으로 쓴다. 천 단위는 1200이나 1_200으로 쓴다.`);
+      if (f[2] && !ACCENTS.includes(f[2])) throw new Error(`${where}: 셋째 칸은 hl, alt, bad 중 하나다.`);
+      const v = chartNumber(f[1], where);
+      if (v < 0) throw new Error(`${where}: 값은 0 이상이다. 늘고 준 양(음수)은 before-after나 line으로 그린다.`);
+      bars.push({ name: f[0], v, accent: f[2] || '' });
+    }
+    if (!bars.length) throw new Error('bar에 막대가 한 줄도 없다.');
+    if (bars.length > 10) report.problems.push(`bar 막대가 ${bars.length}줄이다. 10줄까지다. 작은 것을 "기타"로 묶거나 장표를 나눈다.`);
+    for (const r of refs) if (r.v < 0) throw new Error(`${r.where}: 기준선 값은 0 이상이다.`);
+    const hi = Math.max(...bars.map(b => b.v), ...refs.map(r => r.v)) || 1;
+
+    const W = pre.clientWidth, H = pre.clientHeight, FONT = 20, TICK = 18;
+    const labelW = Math.max(...bars.map(b => textWidth(b.name, FONT, 600))) + 22;
+    if (labelW > W * 0.4) report.problems.push('bar 이름 칸이 그림 폭의 40%를 넘는다. 막대 이름을 줄인다.');
+    const valueW = Math.max(...bars.map(b => textWidth(valueText(b.v, unit), FONT, 700))) + 16;
+    const top = refs.length ? 40 : 6, x0 = labelW, x1 = W - valueW;
+    const ROW = Math.min(64, (H - top - 8) / bars.length), BAR = Math.round(ROW * 0.62);
+    if (ROW < FONT + 14) report.problems.push(`bar 한 줄 높이가 모자란다(${Math.round(ROW)}px). 막대를 줄이거나 장표를 나눈다.`);
+    const height = top + bars.length * ROW + 8;
+    const X = v => x0 + v / hi * (x1 - x0);
+
+    const svg = el('svg', { width: W, height, viewBox: `0 0 ${W} ${height}`, class: 'chart' });
+    const bottom = top + bars.length * ROW;
+    bars.forEach((b, i) => {
+      const cy = top + i * ROW + ROW / 2;
+      el('text', { x: x0 - 14, y: cy, 'text-anchor': 'end', 'dominant-baseline': 'central',
+        style: `font-size:${FONT}px;font-weight:600;fill:${color(b.accent ? `--${b.accent}-text` : '--text')}` }, svg).textContent = b.name;
+      const fill = b.accent ? color(`--${b.accent}-fill`) : color('--box');
+      const stroke = b.accent ? color(`--${b.accent}`) : color('--line-strong');
+      const r = el('rect', { x: x0, y: cy - BAR / 2, width: Math.max(X(b.v) - x0, 2), height: BAR, rx: 5,
+        style: `fill:${fill};stroke:${stroke};stroke-width:${b.accent ? 2.5 : 1.5}` }, svg);
+      if (b.accent) r.setAttribute('class', b.accent);
+      el('text', { x: X(b.v) + 10, y: cy, 'dominant-baseline': 'central',
+        style: `font-size:${FONT}px;font-weight:700;fill:${color(b.accent ? `--${b.accent}-text` : '--text-soft')}` }, svg).textContent = valueText(b.v, unit);
+    });
+    el('line', { x1: x0, x2: x0, y1: top - 4, y2: bottom, style: `stroke:${color('--line-strong')};stroke-width:2` }, svg);
+    const taken = [];
+    for (const r of refs) {
+      const x = X(r.v), s = r.label ? `${r.label} ${valueText(r.v, unit)}` : valueText(r.v, unit), w = textWidth(s, TICK, 600);
+      el('line', { x1: x, x2: x, y1: top - 6, y2: bottom, style: `stroke:${color('--text-soft')};stroke-width:2;stroke-dasharray:6 5` }, svg);
+      const anchor = x + w / 2 > W ? 'end' : 'middle';
+      el('text', { x, y: top - 20, 'text-anchor': anchor, 'dominant-baseline': 'central', style: `font-size:${TICK}px;font-weight:600;fill:${color('--text-soft')}` }, svg).textContent = s;
+      const b = { x: anchor === 'end' ? x - w : x - w / 2, y: top - 32, w, h: 24, name: s }, clash = taken.find(t => overlaps(b, t, 4));
+      if (clash) report.problems.push(`bar 기준선 이름 "${s}"이 "${clash.name}"과 겹친다. 기준선을 줄이거나 이름을 줄인다.`);
+      taken.push(b);
+      // 기준선이 값 글자를 지나가면 읽기 어렵다
+      bars.forEach((b, i) => {
+        const lx = X(b.v) + 10, lw = textWidth(valueText(b.v, unit), FONT, 700);
+        if (x > lx - 4 && x < lx + lw + 4) report.problems.push(`bar 기준선 "${s}"이 "${b.name}" 값 글자를 지나간다. 기준선 값을 확인하거나 기준선을 아래 글로 옮긴다.`);
+      });
+    }
+    pre.replaceChildren(svg);
+  }
+
   // 팔레트(회색 + 강조 세 색) 밖의 채도 높은 색이면 '#rrggbb', 아니면 ''. 표에 없는 Mermaid 종류의 기본 무지개색, 손 그림의 임의 색을 잡는다
   let allowedRgb;
   function offColor(c) {
@@ -686,8 +908,8 @@
         if (kind === 'flowchart' || kind === 'state') b.append(classDefs);
         else if (kind === 'timeline') prepareTimeline(b);
         else if (kind === 'sequence') prepareSequence(b);
-        else if (/^(sankey|gantt)/.test(word))
-          report.problems.push(`Mermaid ${word}는 쓰지 않는다. 양의 흐름은 slide-sankey.html, 시간 막대는 slide-timebar.html 견본으로 그린다.`);
+        else if (/^(sankey|gantt|xychart)/.test(word))
+          report.problems.push(`Mermaid ${word}는 쓰지 않는다. 양의 흐름은 slide-sankey.html, 시간 막대는 slide-timebar.html, 값의 추이는 slide-line.html, 항목 크기 견주기는 slide-bar.html 견본으로 그린다.`);
       }
       mermaid.initialize({
         startOnLoad: false, theme: 'dark',
@@ -738,11 +960,13 @@
     if (document.fonts) await document.fonts.ready;
     for (const pre of document.querySelectorAll('.diagram pre.sankey')) drawSankey(pre);
     for (const pre of document.querySelectorAll('.diagram pre.timebar')) drawTimebar(pre);
-    const outside = [...document.querySelectorAll('pre.cells, pre.tree, pre.quadrant, pre.sankey, pre.timebar')].filter(p => !p.closest('.diagram'));
+    const outside = [...document.querySelectorAll('pre.cells, pre.tree, pre.quadrant, pre.sankey, pre.timebar, pre.line, pre.bar')].filter(p => !p.closest('.diagram'));
     if (outside.length) report.problems.push(`값 그림 <pre class="${outside[0].className}">이 그림 영역(.diagram) 밖에 있어 그려지지 않고 글자로 찍힌다. .diagram 안으로 옮긴다.`);
     for (const pre of document.querySelectorAll('.diagram pre.cells')) drawCells(pre);
     for (const pre of document.querySelectorAll('.diagram pre.tree')) drawTree(pre);
     for (const pre of document.querySelectorAll('.diagram pre.quadrant')) drawQuadrant(pre);
+    for (const pre of document.querySelectorAll('.diagram pre.line')) drawLine(pre);
+    for (const pre of document.querySelectorAll('.diagram pre.bar')) drawBar(pre);
     checkDiagram();
 
     // 색: 칠한 곳이 많으면 어디를 볼지 흐려진다. 나머지는 회색으로 두고 지금 볼 곳만 칠한다

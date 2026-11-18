@@ -39,8 +39,8 @@ body>.subtitle{font-size:21px;margin-bottom:22px;color:var(--text-dim);white-spa
 /* 그림 */
 .diagram{min-height:0;min-width:0;overflow:hidden;display:flex;flex-direction:column;
   justify-content:safe center;align-items:center;gap:14px}
-/* Mermaid와 값으로 그리는 그림(sankey, timebar)은 남은 높이를 다 쓰고 가운데 놓인다 */
-.diagram>pre.mermaid,.diagram>pre.sankey,.diagram>pre.timebar,.diagram>pre.cells,.diagram>pre.tree,.diagram>pre.quadrant{flex:1 1 0;min-height:0;width:100%;overflow:hidden;
+/* Mermaid와 값으로 그리는 그림(sankey, timebar, line, bar 등)은 남은 높이를 다 쓰고 가운데 놓인다 */
+.diagram>pre.mermaid,.diagram>pre.sankey,.diagram>pre.timebar,.diagram>pre.cells,.diagram>pre.tree,.diagram>pre.quadrant,.diagram>pre.line,.diagram>pre.bar{flex:1 1 0;min-height:0;width:100%;overflow:hidden;
   display:flex;align-items:center;justify-content:center;white-space:normal;font-family:var(--font)}
 .diagram svg.chart{overflow:visible}
 
