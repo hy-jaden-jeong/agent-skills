@@ -2,7 +2,7 @@
 
 일할 때 쓰는 개인 skill 모음. [Agent Skills](https://agentskills.io) 형식(`SKILL.md`)이라 특정 vendor에 묶이지 않는다. Claude Code와 Codex(GPT)에서 같은 파일을 그대로 쓴다.
 
-- skill 본문은 model 이름 대신 역할(작업 모델, 판단 모델, 싼 모델)로 말한다. 역할마다 Claude Code와 Codex에서 쓸 이름은 [debate-with-top-model](skills/debate-with-top-model/SKILL.md)의 "역할" 표에 있다.
+- skill 본문은 model 이름 대신 역할(작업 모델, 판단 모델, 싼 모델)로 말한다. 역할마다 Claude Code와 Codex에서 쓸 이름은 아래 [subagent 정의](#subagent-정의)의 표에 있다. 작업 모델은 메인 세션의 model이기도 하다.
 - agent마다 다른 도구(선택 화면, subagent, 미리보기)는 "있으면 쓰고, 없으면 이렇게"로 쓴다.
 - subagent 정의는 역할 하나에 원본 한 벌(`agents/roles/`)을 두고, agent별 파일을 만들어 둔다(`agents/claude/`, `agents/codex/`).
 
@@ -14,14 +14,11 @@
 | [teach-me](skills/teach-me/SKILL.md) | 문서·레포·시스템을 단계별 장표·퀴즈로 가르친다. 그림은 `diagram-slides`에 맡긴다 |
 | [grill-me](skills/grill-me/SKILL.md) | 계획·결정·아이디어를 끝까지 인터뷰한다. 정할 것을 모두 찾아 추천과 함께 묻고, 필요한 만큼 가르치고, 결정 목록을 확정받는다. 코드가 없는 주제는 파일 없이 끝내고, 만들 일이면 문제 맞추기 → 설계 → 인터뷰 → 확정으로 spec 한 파일을 확정한다 |
 | [build-to-spec](skills/build-to-spec/SKILL.md) | 확정된 spec대로 만들고 증명한다. slice 나누기 → 구현(실패하는 test 먼저, 기존 출력은 golden master로 지킴) → 세 방향 검증. spec 파일이 진행 상태라 끊긴 구현을 이어 간다 |
-| [debate-with-top-model](skills/debate-with-top-model/SKILL.md) | 메인은 작업 모델로 두고, 설계·접근법을 찾을 문제·되돌리기 비싼 결정·두 번 실패한 문제에서만 가장 강한 판단 모델(Claude는 Fable, GPT는 Astra)과 각자 안을 내고 견줘 결론 하나를 들고 온다 |
 
 함께 설치할 것이 있다. skill은 다른 skill을 같은 skills 폴더에서 찾는다.
 
 - `teach-me`는 `diagram-slides`를 쓴다.
 - `build-to-spec`은 spec이 없으면 `grill-me`로 spec부터 확정하고, 사용자에게 묻는 법과 spec 형식을 `grill-me`에서 읽는다. 둘을 함께 설치한다. 일하는 차례는 `grill-me`(spec 확정) → `build-to-spec`(만들고 증명)이다.
-- `grill-me`는 `debate-with-top-model`이 있으면 설계 후보를 그 skill의 토론으로 만든다.
-- `debate-with-top-model`은 사용자에게 묻는 법을 `grill-me`에서 읽는다.
 
 ## 설치
 
@@ -32,12 +29,11 @@ skill 폴더를 agent의 skills 폴더 아래에 symbolic link로 건다. 레포
 - 레포 이름이 `agent-skills`에서 `work-skills`로 바뀌었다. 옛 주소는 GitHub이 새 주소로 넘겨준다. clone해 둔 폴더는 `mv ~/agent-skills ~/work-skills`로 옮기고 `git remote set-url origin https://github.com/hy-jaden-jeong/work-skills.git`을 돌린 뒤, 아래 설치(skill과 subagent 정의)를 다시 돌린다.
 
 - `spec-driven` → `build-to-spec`(spec 확정은 `grill-me`로 옮김)
-- `debate-with-fable` → `debate-with-top-model`
 
-없앤 skill도 있다. `motion-graphics`는 지웠다.
+없앤 skill도 있다. `motion-graphics`와 `debate-with-fable`(뒤에 `debate-with-top-model`로 이름을 바꿨던 것)은 지웠다.
 
 ```bash
-rm -f ~/.claude/skills/{spec-driven,debate-with-fable,motion-graphics} ~/.agents/skills/{spec-driven,debate-with-fable,motion-graphics}
+rm -f ~/.claude/skills/{spec-driven,debate-with-fable,debate-with-top-model,motion-graphics} ~/.agents/skills/{spec-driven,debate-with-fable,debate-with-top-model,motion-graphics}
 ```
 
 ```bash
@@ -70,7 +66,7 @@ skill들이 역할 이름으로 subagent를 부른다. 정의가 없어도 skill
 
 | 역할 | 맡는 일 | Claude Code | Codex |
 | --- | --- | --- | --- |
-| 판단 모델 (`top-solver`) | `debate-with-top-model`의 토론 상대, 통째로 맡길 어려운 조각 | `fable-solver`: Fable, effort `high` | `top_solver`: `gpt-6.2-astra`, `high` |
+| 판단 모델 (`top-solver`) | 설계 후보를 따로 내는 상대, 통째로 맡길 어려운 조각 | `fable-solver`: Fable, effort `high` | `top_solver`: `gpt-6.2-astra`, `high` |
 | 작업 모델 (`steady-worker`) | 판단이 필요한 구현·분석·조사·검토 | `opus-worker`: Opus, effort `high` | `steady_worker`: `gpt-6.2-sol`, `high` |
 | 싼 모델 (`light-worker`) | 그리기, 정해진 대로 고치기, 단순 검색 | `sonnet-worker`: Sonnet, effort `medium` | `light_worker`: `gpt-6.1-terra`, `medium` |
 
@@ -96,7 +92,7 @@ model 이름은 vendor가 자주 바꾼다. 바꿀 때는 `agents/roles/<역할>
 
 - python3, Google Chrome(또는 Chromium·Edge). Chrome이 기본 위치에 없으면 `CHROME_PATH`에 실행 파일 경로를 넣는다
 - 인터넷: 장표는 Mermaid를 CDN에서 불러온다
-- `grill-me`, `build-to-spec`, `debate-with-top-model`은 스크립트가 없어 따로 필요한 것이 없다
+- `grill-me`, `build-to-spec`은 스크립트가 없어 따로 필요한 것이 없다
 - 장표 설치 확인
 
   ```bash
